@@ -1,0 +1,105 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical">
+
+    <com.google.android.material.appbar.MaterialToolbar
+        android:id="@+id/toolbar"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:navigationContentDescription="@string/detail_back"
+        app:navigationIcon="@drawable/ic_arrow_back" />
+
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:paddingBottom="@dimen/space_lg">
+
+            <HorizontalScrollView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:scrollbars="none">
+
+                <LinearLayout
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal"
+                    android:paddingHorizontal="@dimen/space_md">
+
+                    <ImageView
+                        style="@style/Widget.CasaLista.GalleryImage"
+                        android:contentDescription="@string/detail_photo_1" />
+
+                    <ImageView
+                        style="@style/Widget.CasaLista.GalleryImage"
+                        android:contentDescription="@string/detail_photo_2" />
+
+                    <ImageView
+                        style="@style/Widget.CasaLista.GalleryImage"
+                        android:contentDescription="@string/detail_photo_3" />
+                </LinearLayout>
+            </HorizontalScrollView>
+
+            <TextView
+                android:id="@+id/price"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginHorizontal="@dimen/space_md"
+                android:layout_marginTop="@dimen/space_md"
+                android:textAppearance="@style/TextAppearance.CasaLista.Title"
+                android:textColor="@color/gold_text" />
+
+            <TextView
+                android:id="@+id/details"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginHorizontal="@dimen/space_md"
+                android:textAppearance="@style/TextAppearance.CasaLista.Body" />
+
+            <TextView
+                android:id="@+id/status"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginHorizontal="@dimen/space_md"
+                android:textAppearance="@style/TextAppearance.CasaLista.Caption" />
+
+            <LinearLayout
+                style="@style/Widget.CasaLista.Card.Neo"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_margin="@dimen/space_md"
+                android:orientation="vertical">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/detail_finishes"
+                    android:textAppearance="@style/TextAppearance.CasaLista.Body"
+                    android:textStyle="bold" />
+
+                <TextView
+                    android:id="@+id/finishes"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="@dimen/space_sm"
+                    android:textAppearance="@style/TextAppearance.CasaLista.Body" />
+            </LinearLayout>
+
+            <Button
+                android:id="@+id/addButton"
+                style="@style/Widget.CasaLista.Button.Gold"
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/button_height"
+                android:layout_marginHorizontal="@dimen/space_md"
+                android:text="@string/detail_add" />
+        </LinearLayout>
+    </ScrollView>
+</LinearLayout>

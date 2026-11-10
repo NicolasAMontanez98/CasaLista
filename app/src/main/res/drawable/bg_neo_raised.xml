@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layer-list xmlns:android="http://schemas.android.com/apk/res/android">
+    <item android:left="@dimen/neo_offset" android:top="@dimen/neo_offset">
+        <shape>
+            <solid android:color="@color/neo_shadow_dark" />
+            <corners android:radius="@dimen/radius_card" />
+        </shape>
+    </item>
+    <item android:right="@dimen/neo_offset" android:bottom="@dimen/neo_offset">
+        <shape>
+            <solid android:color="@color/neo_shadow_light" />
+            <corners android:radius="@dimen/radius_card" />
+        </shape>
+    </item>
+    <item
+        android:left="2dp"
+        android:top="2dp"
+        android:right="2dp"
+        android:bottom="2dp">
+        <shape>
+            <solid android:color="@color/neo_surface" />
+            <corners android:radius="@dimen/radius_card" />
+        </shape>
+    </item>
+</layer-list>

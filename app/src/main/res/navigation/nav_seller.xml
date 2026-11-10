@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="utf-8"?>
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    app:startDestination="@id/productPanelFragment">
+
+    <fragment
+        android:id="@+id/productPanelFragment"
+        android:name="com.example.casalista.ui.seller.ProductPanelFragment"
+        android:label="@string/seller_products" />
+
+    <fragment
+        android:id="@+id/productFormFragment"
+        android:name="com.example.casalista.ui.seller.ProductFormFragment"
+        android:label="@string/seller_form" />
+
+    <fragment
+        android:id="@+id/ordersHistoryFragment"
+        android:name="com.example.casalista.ui.seller.OrdersHistoryFragment"
+        android:label="@string/seller_orders" />
+
+    <fragment
+        android:id="@+id/orderDetailFragment"
+        android:name="com.example.casalista.ui.seller.OrderDetailFragment"
+        android:label="@string/order_detail" />
+
+    <fragment
+        android:id="@+id/sellerProfileFragment"
+        android:name="com.example.casalista.ui.common.ProfileFragment"
+        android:label="@string/seller_profile" />
+</navigation>

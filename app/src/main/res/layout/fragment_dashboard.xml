@@ -1,0 +1,164 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:padding="@dimen/space_sm">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:baselineAligned="false"
+            android:orientation="horizontal">
+
+            <LinearLayout
+                style="@style/Widget.CasaLista.Card.Neo"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_margin="@dimen/space_sm"
+                android:layout_weight="1"
+                android:orientation="vertical">
+
+                <TextView
+                    android:id="@+id/salesValue"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textAppearance="@style/TextAppearance.CasaLista.Body"
+                    android:textColor="@color/gold_text"
+                    android:textStyle="bold" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/dash_sales"
+                    android:textAppearance="@style/TextAppearance.CasaLista.Caption" />
+            </LinearLayout>
+
+            <LinearLayout
+                style="@style/Widget.CasaLista.Card.Neo"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_margin="@dimen/space_sm"
+                android:layout_weight="1"
+                android:orientation="vertical">
+
+                <TextView
+                    android:id="@+id/ordersValue"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textAppearance="@style/TextAppearance.CasaLista.Title"
+                    android:textColor="@color/gold_text" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/dash_orders"
+                    android:textAppearance="@style/TextAppearance.CasaLista.Caption" />
+            </LinearLayout>
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:baselineAligned="false"
+            android:orientation="horizontal">
+
+            <LinearLayout
+                style="@style/Widget.CasaLista.Card.Neo"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_margin="@dimen/space_sm"
+                android:layout_weight="1"
+                android:orientation="vertical">
+
+                <TextView
+                    android:id="@+id/usersValue"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textAppearance="@style/TextAppearance.CasaLista.Title"
+                    android:textColor="@color/gold_text" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/dash_users"
+                    android:textAppearance="@style/TextAppearance.CasaLista.Caption" />
+            </LinearLayout>
+
+            <LinearLayout
+                style="@style/Widget.CasaLista.Card.Neo"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_margin="@dimen/space_sm"
+                android:layout_weight="1"
+                android:orientation="vertical">
+
+                <TextView
+                    android:id="@+id/productsValue"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textAppearance="@style/TextAppearance.CasaLista.Title"
+                    android:textColor="@color/gold_text" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/dash_products"
+                    android:textAppearance="@style/TextAppearance.CasaLista.Caption" />
+            </LinearLayout>
+        </LinearLayout>
+
+        <LinearLayout
+            style="@style/Widget.CasaLista.Card.Neo"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_margin="@dimen/space_sm"
+            android:orientation="vertical">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/dash_chart"
+                android:textAppearance="@style/TextAppearance.CasaLista.Body"
+                android:textStyle="bold" />
+
+            <com.example.casalista.ui.common.BarChartView
+                android:id="@+id/salesChart"
+                android:layout_width="match_parent"
+                android:layout_height="200dp"
+                android:contentDescription="@string/dash_chart_desc" />
+        </LinearLayout>
+
+        <LinearLayout
+            style="@style/Widget.CasaLista.Card.Neo"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_margin="@dimen/space_sm"
+            android:orientation="vertical">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/dash_pending"
+                android:textAppearance="@style/TextAppearance.CasaLista.Body"
+                android:textStyle="bold" />
+
+            <TextView
+                android:id="@+id/pendingOrders"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/space_sm"
+                android:textAppearance="@style/TextAppearance.CasaLista.Body" />
+
+            <TextView
+                android:id="@+id/pendingProducts"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textAppearance="@style/TextAppearance.CasaLista.Body" />
+        </LinearLayout>
+    </LinearLayout>
+</ScrollView>

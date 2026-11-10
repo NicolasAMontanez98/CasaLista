@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="utf-8"?>
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    app:startDestination="@id/homeFragment">
+
+    <fragment
+        android:id="@+id/homeFragment"
+        android:name="com.example.casalista.ui.buyer.HomeFragment" />
+
+    <fragment
+        android:id="@+id/catalogFragment"
+        android:name="com.example.casalista.ui.buyer.CatalogFragment" />
+
+    <fragment
+        android:id="@+id/houseDetailFragment"
+        android:name="com.example.casalista.ui.buyer.HouseDetailFragment" />
+
+    <fragment
+        android:id="@+id/checkoutFragment"
+        android:name="com.example.casalista.ui.buyer.CheckoutFragment" />
+
+    <fragment
+        android:id="@+id/cartFragment"
+        android:name="com.example.casalista.ui.buyer.CartFragment" />
+
+    <fragment
+        android:id="@+id/buyerProfileFragment"
+        android:name="com.example.casalista.ui.common.ProfileFragment" />
+</navigation>

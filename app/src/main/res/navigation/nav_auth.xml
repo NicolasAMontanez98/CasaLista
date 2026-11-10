@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8"?>
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    app:startDestination="@id/loginFragment">
+
+    <fragment
+        android:id="@+id/loginFragment"
+        android:name="com.example.casalista.ui.auth.LoginFragment" />
+
+    <fragment
+        android:id="@+id/recoverPasswordFragment"
+        android:name="com.example.casalista.ui.auth.RecoverPasswordFragment" />
+
+    <fragment
+        android:id="@+id/registerFragment"
+        android:name="com.example.casalista.ui.auth.RegisterFragment" />
+</navigation>

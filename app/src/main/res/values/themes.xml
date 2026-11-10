@@ -1,0 +1,31 @@
+<resources xmlns:tools="http://schemas.android.com/tools">
+    <style name="Base.Theme.CasaLista" parent="Theme.Material3.DayNight.NoActionBar">
+        <item name="colorPrimary">@color/gold</item>
+        <item name="colorOnPrimary">@color/on_gold</item>
+        <item name="colorPrimaryContainer">@color/gold</item>
+        <item name="colorOnPrimaryContainer">@color/on_gold</item>
+        <item name="colorSecondary">@color/gold_dark</item>
+        <item name="colorSecondaryContainer">@color/neo_inset</item>
+        <item name="colorSurfaceContainer">@color/neo_surface</item>
+        <item name="colorOnSecondaryContainer">@color/gold_text</item>
+        <item name="borderlessButtonStyle">@style/Widget.CasaLista.Button.Text</item>
+        <item name="materialButtonOutlinedStyle">@style/Widget.CasaLista.Button.Outlined</item>
+        <item name="android:colorBackground">@color/neo_background</item>
+        <item name="colorSurface">@color/neo_surface</item>
+        <item name="colorOnSurface">@color/text_primary</item>
+        <item name="colorOnSurfaceVariant">@color/text_secondary</item>
+        <item name="colorError">@color/state_error</item>
+    </style>
+
+    <style name="Theme.CasaLista" parent="Base.Theme.CasaLista">
+        <item name="android:navigationBarColor">@android:color/transparent</item>
+        <item name="android:statusBarColor">@android:color/transparent</item>
+        <item name="android:windowLightStatusBar">?attr/isLightTheme</item>
+    </style>
+
+    <style name="Theme.CasaLista.Splash" parent="Theme.SplashScreen">
+        <item name="windowSplashScreenBackground">@color/neo_background</item>
+        <item name="windowSplashScreenAnimatedIcon">@drawable/ic_launcher_foreground</item>
+        <item name="postSplashScreenTheme">@style/Theme.CasaLista</item>
+    </style>
+</resources>

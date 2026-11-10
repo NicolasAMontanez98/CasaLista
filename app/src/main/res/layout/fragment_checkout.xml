@@ -1,0 +1,197 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical">
+
+    <com.google.android.material.appbar.MaterialToolbar
+        android:id="@+id/toolbar"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:navigationContentDescription="@string/detail_back"
+        app:navigationIcon="@drawable/ic_arrow_back"
+        app:title="@string/checkout_title" />
+
+    <TextView
+        android:id="@+id/stepLabel"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginHorizontal="@dimen/space_md"
+        android:textAppearance="@style/TextAppearance.CasaLista.Caption" />
+
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1">
+
+        <FrameLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:padding="@dimen/space_md">
+
+            <LinearLayout
+                android:id="@+id/stepLot"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginBottom="@dimen/space_md"
+                    android:text="@string/checkout_lot_title"
+                    android:textAppearance="@style/TextAppearance.CasaLista.Title" />
+
+                <com.google.android.material.textfield.TextInputLayout
+                    android:id="@+id/addressLayout"
+                    style="@style/Widget.CasaLista.TextInput.Inset"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:hint="@string/checkout_lot_address">
+
+                    <com.google.android.material.textfield.TextInputEditText
+                        android:id="@+id/addressInput"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:inputType="textPostalAddress" />
+                </com.google.android.material.textfield.TextInputLayout>
+
+                <Button
+                    android:id="@+id/photoButton"
+                    style="?attr/materialButtonOutlinedStyle"
+                    android:layout_width="match_parent"
+                    android:layout_height="@dimen/button_height"
+                    android:layout_marginTop="@dimen/space_md"
+                    android:text="@string/checkout_photo" />
+
+                <ImageView
+                    android:id="@+id/lotPhoto"
+                    android:layout_width="match_parent"
+                    android:layout_height="200dp"
+                    android:layout_marginTop="@dimen/space_md"
+                    android:contentDescription="@string/checkout_photo_desc"
+                    android:scaleType="centerCrop"
+                    android:visibility="gone" />
+            </LinearLayout>
+
+            <LinearLayout
+                android:id="@+id/stepMethod"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:visibility="gone">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginBottom="@dimen/space_md"
+                    android:text="@string/checkout_method_title"
+                    android:textAppearance="@style/TextAppearance.CasaLista.Title" />
+
+                <RadioGroup
+                    android:id="@+id/methodGroup"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content">
+
+                    <RadioButton
+                        android:id="@+id/methodCard"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:checked="true"
+                        android:minHeight="48dp"
+                        android:text="@string/method_card" />
+
+                    <RadioButton
+                        android:id="@+id/methodPse"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:minHeight="48dp"
+                        android:text="@string/method_pse" />
+
+                    <RadioButton
+                        android:id="@+id/methodTransfer"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:minHeight="48dp"
+                        android:text="@string/method_transfer" />
+                </RadioGroup>
+            </LinearLayout>
+
+            <LinearLayout
+                android:id="@+id/stepConfirm"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:visibility="gone">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginBottom="@dimen/space_md"
+                    android:text="@string/checkout_confirm_title"
+                    android:textAppearance="@style/TextAppearance.CasaLista.Title" />
+
+                <TextView
+                    android:id="@+id/summaryText"
+                    style="@style/Widget.CasaLista.Card.Neo"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:textAppearance="@style/TextAppearance.CasaLista.Body" />
+            </LinearLayout>
+
+            <LinearLayout
+                android:id="@+id/stepResult"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:visibility="gone">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/checkout_done_title"
+                    android:textAppearance="@style/TextAppearance.CasaLista.Title"
+                    android:textColor="@color/gold_text" />
+
+                <TextView
+                    android:id="@+id/resultMessage"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginBottom="@dimen/space_lg"
+                    android:textAppearance="@style/TextAppearance.CasaLista.Body" />
+
+                <Button
+                    android:id="@+id/homeButton"
+                    style="@style/Widget.CasaLista.Button.Gold"
+                    android:layout_width="match_parent"
+                    android:layout_height="@dimen/button_height"
+                    android:text="@string/checkout_done_home" />
+            </LinearLayout>
+        </FrameLayout>
+    </ScrollView>
+
+    <LinearLayout
+        android:id="@+id/buttons"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:padding="@dimen/space_md">
+
+        <Button
+            android:id="@+id/backButton"
+            style="?attr/materialButtonOutlinedStyle"
+            android:layout_width="0dp"
+            android:layout_height="@dimen/button_height"
+            android:layout_marginEnd="@dimen/space_sm"
+            android:layout_weight="1"
+            android:text="@string/checkout_back" />
+
+        <Button
+            android:id="@+id/nextButton"
+            style="@style/Widget.CasaLista.Button.Gold"
+            android:layout_width="0dp"
+            android:layout_height="@dimen/button_height"
+            android:layout_weight="1" />
+    </LinearLayout>
+</LinearLayout>

@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="neo_background">#1C1D20</color>
+    <color name="neo_surface">#222327</color>
+    <color name="neo_inset">#16171A</color>
+    <color name="neo_shadow_dark">#0A0A0C</color>
+    <color name="neo_shadow_light">#34363C</color>
+    <color name="gold">#D4AF37</color>
+    <color name="gold_text">#D4AF37</color>
+    <color name="gold_light">#ECC854</color>
+    <color name="gold_dark">#B89024</color>
+    <color name="text_primary">#ECE8DE</color>
+    <color name="text_secondary">#929088</color>
+    <color name="state_error">#E86C62</color>
+</resources>

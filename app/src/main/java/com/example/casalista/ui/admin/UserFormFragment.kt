@@ -40,7 +40,7 @@ class UserFormFragment : Fragment(R.layout.fragment_user_form) {
     }
 
     private fun setupAccountActions(user: User) {
-        if (user.email == SessionManager(requireContext()).lastEmail) {
+        if (user.email == SessionManager(requireContext()).user?.email) {
             binding.roleLayout.isEnabled = false
             return
         }

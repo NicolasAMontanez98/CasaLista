@@ -9,6 +9,7 @@ enum class Role(val label: String) {
 data class User(var name: String, val email: String, var password: String, var role: Role) {
     var phone = ""
     var active = true
+    var uid = ""
 }
 
 data class House(

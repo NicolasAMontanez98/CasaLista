@@ -5,9 +5,10 @@ import android.os.Bundle
 import android.view.View
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.fragment.app.Fragment
+import androidx.lifecycle.lifecycleScope
 import com.example.casalista.R
+import com.example.casalista.data.AuthRepository
 import com.example.casalista.data.Cart
-import com.example.casalista.data.Datos
 import com.example.casalista.databinding.FragmentProfileBinding
 import com.example.casalista.ui.auth.AuthActivity
 import com.example.casalista.util.SessionManager
@@ -15,6 +16,8 @@ import com.example.casalista.util.ThemeManager
 import com.example.casalista.util.Validators
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.google.android.material.snackbar.Snackbar
+import kotlinx.coroutines.CancellationException
+import kotlinx.coroutines.launch
 
 class ProfileFragment : Fragment(R.layout.fragment_profile) {
 
@@ -39,7 +42,16 @@ class ProfileFragment : Fragment(R.layout.fragment_profile) {
             if (error == null) {
                 user.name = binding.nameInput.text.toString().trim()
                 user.phone = binding.phoneInput.text.toString().trim()
-                Snackbar.make(view, R.string.profile_saved, Snackbar.LENGTH_SHORT).show()
+                viewLifecycleOwner.lifecycleScope.launch {
+                    try {
+                        AuthRepository.updateProfile(user)
+                        Snackbar.make(view, R.string.profile_saved, Snackbar.LENGTH_SHORT).show()
+                    } catch (e: CancellationException) {
+                        throw e
+                    } catch (e: Exception) {
+                        Snackbar.make(view, AuthRepository.errorMessage(e), Snackbar.LENGTH_SHORT).show()
+                    }
+                }
             }
         }
 
@@ -53,22 +65,31 @@ class ProfileFragment : Fragment(R.layout.fragment_profile) {
             ThemeManager.setDark(requireContext(), on)
         }
 
-        binding.logoutButton.setOnClickListener { leave(session) }
+        binding.logoutButton.setOnClickListener { leave() }
         binding.deleteButton.setOnClickListener {
             MaterialAlertDialogBuilder(requireContext())
                 .setTitle(R.string.profile_delete_title)
                 .setMessage(R.string.profile_delete_message)
                 .setNegativeButton(R.string.profile_cancel, null)
                 .setPositiveButton(R.string.profile_delete_confirm) { _, _ ->
-                    Datos.users.remove(user)
-                    leave(session)
+                    viewLifecycleOwner.lifecycleScope.launch {
+                        try {
+                            AuthRepository.deleteAccount(user)
+                            leave()
+                        } catch (e: CancellationException) {
+                            throw e
+                        } catch (e: Exception) {
+                            Snackbar.make(view, AuthRepository.errorMessage(e), Snackbar.LENGTH_LONG).show()
+                        }
+                    }
                 }
                 .show()
         }
     }
 
-    private fun leave(session: SessionManager) {
-        session.lastEmail = null
+    private fun leave() {
+        AuthRepository.logout()
+        SessionManager.current = null
         Cart.clear()
         startActivity(
             Intent(requireContext(), AuthActivity::class.java)

@@ -6,19 +6,22 @@ import android.view.View
 import android.widget.Toast
 import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
+import androidx.lifecycle.lifecycleScope
 import com.example.casalista.R
-import com.example.casalista.ui.common.goTo
-import com.example.casalista.data.Datos
+import com.example.casalista.data.AuthRepository
 import com.example.casalista.data.Role
 import com.example.casalista.data.User
 import com.example.casalista.databinding.FragmentLoginBinding
 import com.example.casalista.ui.admin.AdminActivity
 import com.example.casalista.ui.buyer.BuyerActivity
+import com.example.casalista.ui.common.goTo
 import com.example.casalista.ui.seller.SellerActivity
 import com.example.casalista.util.SessionManager
 import com.example.casalista.util.Validators
 import com.example.casalista.util.biometricAvailable
 import com.example.casalista.util.showBiometricPrompt
+import kotlinx.coroutines.CancellationException
+import kotlinx.coroutines.launch
 
 class LoginFragment : Fragment(R.layout.fragment_login) {
 
@@ -43,18 +46,21 @@ class LoginFragment : Fragment(R.layout.fragment_login) {
         binding.passwordLayout.error = passwordError?.let(::getString)
         if (emailError != null || passwordError != null) return
 
-        val user = Datos.login(email, password)
-        if (user == null) {
-            binding.passwordLayout.error = getString(R.string.error_credentials)
-        } else if (!user.active) {
-            binding.passwordLayout.error = getString(R.string.error_suspended)
-        } else {
-            SessionManager(requireContext()).lastEmail = user.email
-            enter(user)
+        binding.loginButton.isEnabled = false
+        viewLifecycleOwner.lifecycleScope.launch {
+            try {
+                enter(AuthRepository.login(email, password))
+            } catch (e: CancellationException) {
+                throw e
+            } catch (e: Exception) {
+                binding.passwordLayout.error = getString(AuthRepository.errorMessage(e))
+                binding.loginButton.isEnabled = true
+            }
         }
     }
 
     private fun enter(user: User) {
+        SessionManager.current = user
         val screen = when (user.role) {
             Role.BUYER -> BuyerActivity::class.java
             Role.SELLER -> SellerActivity::class.java
@@ -66,20 +72,23 @@ class LoginFragment : Fragment(R.layout.fragment_login) {
 
     private fun setupFingerprint(binding: FragmentLoginBinding) {
         val session = SessionManager(requireContext())
-        binding.fingerprintButton.isVisible = biometricAvailable() && session.fingerprintEnabled
+        binding.fingerprintButton.isVisible =
+            biometricAvailable() && session.fingerprintEnabled && AuthRepository.isSignedIn
 
         binding.fingerprintButton.setOnClickListener {
             showBiometricPrompt(
                 getString(R.string.biometric_title),
                 getString(R.string.biometric_use_password),
             ) {
-                val user = session.user
-                if (user == null) {
-                    Toast.makeText(requireContext(), R.string.biometric_first, Toast.LENGTH_SHORT).show()
-                } else if (!user.active) {
-                    Toast.makeText(requireContext(), R.string.error_suspended, Toast.LENGTH_SHORT).show()
-                } else {
-                    enter(user)
+                viewLifecycleOwner.lifecycleScope.launch {
+                    try {
+                        enter(AuthRepository.loadCurrent())
+                    } catch (e: CancellationException) {
+                        throw e
+                    } catch (e: Exception) {
+                        Toast.makeText(requireContext(), AuthRepository.errorMessage(e), Toast.LENGTH_SHORT).show()
+                        binding.fingerprintButton.isVisible = AuthRepository.isSignedIn
+                    }
                 }
             }
         }

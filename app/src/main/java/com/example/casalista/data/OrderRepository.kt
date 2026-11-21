@@ -4,18 +4,26 @@ import com.google.firebase.firestore.DocumentSnapshot
 import com.google.firebase.firestore.FirebaseFirestore
 import kotlinx.coroutines.tasks.await
 
+/** Pedidos guardados en la colección `orders` de Firestore. */
 object OrderRepository {
     private val orders = FirebaseFirestore.getInstance().collection("orders")
 
+    /** Carga todos los pedidos (vendedor y administrador). */
     suspend fun loadAll() = fill(orders.get().await().documents)
 
+    /** Carga solo los pedidos del comprador con ese uid. */
     suspend fun loadMine(uid: String) = fill(orders.whereEqualTo("buyerUid", uid).get().await().documents)
 
+    /** Reemplaza la copia local, con los más recientes primero. */
     private fun fill(docs: List<DocumentSnapshot>) {
         Datos.orders.clear()
         Datos.orders.addAll(docs.map { it.toOrder() }.sortedByDescending { it.createdAt })
     }
 
+    /**
+     * Guarda una compra: un pedido por cada producto del carrito, todos con el mismo
+     * [code] y en estado pendiente. Se escriben en un lote para que se guarden todos o ninguno.
+     */
     suspend fun place(
         code: String, uid: String, buyer: String, address: String,
         items: List<CartItem>, lat: Double?, lng: Double?, paymentRef: String,
@@ -33,11 +41,13 @@ object OrderRepository {
         batch.commit().await()
     }
 
+    /** Cambia el estado de un pedido (aceptar, enviar, entregar o cancelar). */
     suspend fun updateStatus(order: SaleOrder, status: OrderStatus) {
         orders.document(order.id).update("status", status.name).await()
         Datos.updateOrder(order.copy(status = status))
     }
 
+    /** Convierte el pedido en el mapa de campos que se guarda en Firestore. */
     private fun SaleOrder.toMap() = mapOf(
         "lat" to lat,
         "paymentRef" to paymentRef,
@@ -54,6 +64,7 @@ object OrderRepository {
         "createdAt" to createdAt,
     )
 
+    /** Reconstruye un pedido desde un documento de Firestore, con valores por defecto si falta algún campo. */
     private fun DocumentSnapshot.toOrder() = SaleOrder(
         id = id,
         code = getString("code").orEmpty(),

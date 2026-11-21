@@ -10,8 +10,13 @@ import android.util.TypedValue
 import android.view.View
 import com.example.casalista.R
 
+/**
+ * Gráfico de barras dibujado a mano con Canvas. Recibe parejas (etiqueta, valor) en
+ * [bars]; cada barra mide en proporción al valor mayor y muestra el valor en millones.
+ */
 class BarChartView(context: Context, attrs: AttributeSet? = null) : View(context, attrs) {
 
+    /** Datos del gráfico; al asignarlos se vuelve a dibujar. */
     var bars: List<Pair<String, Long>> = emptyList()
         set(value) {
             field = value
@@ -27,6 +32,7 @@ class BarChartView(context: Context, attrs: AttributeSet? = null) : View(context
         )
     }
 
+    /** Dibuja cada barra con su valor arriba y su etiqueta abajo (recortada si no cabe). */
     override fun onDraw(canvas: Canvas) {
         if (bars.isEmpty()) return
         val max = bars.maxOf { it.second }.coerceAtLeast(1)

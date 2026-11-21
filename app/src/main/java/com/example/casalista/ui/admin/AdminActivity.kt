@@ -8,6 +8,10 @@ import androidx.navigation.ui.setupWithNavController
 import com.example.casalista.R
 import com.example.casalista.databinding.ActivityAdminBinding
 
+/**
+ * Contenedor de las pantallas del administrador: barra superior y menú lateral con panel, usuarios,
+ * productos, ventas y perfil.
+ */
 class AdminActivity : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {

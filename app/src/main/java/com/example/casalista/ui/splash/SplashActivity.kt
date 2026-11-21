@@ -6,6 +6,7 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
 import com.example.casalista.ui.auth.AuthActivity
 
+/** Pantalla de arranque: muestra la pantalla de bienvenida del sistema y pasa al inicio de sesión. */
 class SplashActivity : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {

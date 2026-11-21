@@ -17,9 +17,11 @@ import com.example.casalista.databinding.FragmentHouseDetailBinding
 import com.example.casalista.util.toPesos
 import com.google.android.material.snackbar.Snackbar
 
+/** Abre el detalle de una casa, enviando su id como argumento. */
 fun Fragment.openHouseDetail(house: House) =
     goTo(R.id.houseDetailFragment, bundleOf("houseId" to house.id))
 
+/** Detalle de una casa: galería de fotos, precio, características y botón para agregarla al carrito. */
 class HouseDetailFragment : Fragment(R.layout.fragment_house_detail) {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {

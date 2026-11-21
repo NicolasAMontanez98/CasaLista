@@ -1,5 +1,6 @@
 package com.example.casalista.data
 
+/** Casas de ejemplo que se cargan en Firestore la primera vez que el administrador abre el panel. */
 object SampleHouses {
     val all = listOf(
         House("aurora", "Casa Aurora", 68_000_000, 45, 2, "Steel framing", "Disponible"),

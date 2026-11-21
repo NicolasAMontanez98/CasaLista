@@ -15,6 +15,7 @@ import com.google.firebase.auth.FirebaseAuthUserCollisionException
 import kotlinx.coroutines.CancellationException
 import kotlinx.coroutines.launch
 
+/** Pantalla de registro de compradores: valida los datos, exige ser mayor de edad y crea la cuenta. */
 class RegisterFragment : Fragment(R.layout.fragment_register) {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -37,6 +38,10 @@ class RegisterFragment : Fragment(R.layout.fragment_register) {
         }
     }
 
+    /**
+     * Crea la cuenta. Si el correo ya existe, el error se muestra en ese campo; con
+     * cualquier otro error, se muestra un aviso. Al terminar vuelve al inicio de sesión.
+     */
     private fun register(binding: FragmentRegisterBinding, name: String, email: String, password: String) {
         binding.registerButton.isEnabled = false
         viewLifecycleOwner.lifecycleScope.launch {

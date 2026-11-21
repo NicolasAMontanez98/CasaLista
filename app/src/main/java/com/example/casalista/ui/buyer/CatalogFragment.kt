@@ -21,6 +21,10 @@ import com.google.android.material.chip.ChipGroup
 import kotlinx.coroutines.CancellationException
 import kotlinx.coroutines.launch
 
+/**
+ * Catálogo de casas publicadas, con búsqueda por nombre, filtro por sistema constructivo
+ * y selector de orden. Cada cambio de filtro vuelve a calcular la lista.
+ */
 class CatalogFragment : Fragment(R.layout.fragment_catalog) {
 
     private var system: String? = null
@@ -31,6 +35,7 @@ class CatalogFragment : Fragment(R.layout.fragment_catalog) {
         val adapter = HouseAdapter(::openHouseDetail)
         binding.houseList.adapter = adapter
 
+        /** Aplica el texto, el sistema y el orden actuales y muestra el aviso si no hay resultados. */
         fun refresh() {
             val found = Datos.search(binding.searchInput.text.toString(), system, order)
             adapter.submitList(found)

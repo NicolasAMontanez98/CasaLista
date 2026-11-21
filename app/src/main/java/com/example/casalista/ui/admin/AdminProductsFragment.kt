@@ -15,18 +15,21 @@ import com.example.casalista.databinding.FragmentAdminProductsBinding
 import kotlinx.coroutines.CancellationException
 import kotlinx.coroutines.launch
 
+/** Cola de revisión: casas que los vendedores enviaron y esperan que el administrador las apruebe o rechace. */
 class AdminProductsFragment : Fragment(R.layout.fragment_admin_products) {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         val binding = FragmentAdminProductsBinding.bind(view)
         lateinit var adapter: ReviewAdapter
 
+        /** Vuelve a calcular la cola con las casas en revisión. */
         fun refresh() {
             val queue = Datos.houses.filter { it.status == Status.REVIEW }
             adapter.submitList(queue)
             binding.emptyText.isVisible = queue.isEmpty()
         }
 
+        /** Muestra el mensaje de error que corresponde a la excepción. */
         fun showError(e: Exception) =
             Toast.makeText(requireContext(), AuthRepository.errorMessage(e), Toast.LENGTH_SHORT).show()
 

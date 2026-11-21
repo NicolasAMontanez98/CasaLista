@@ -19,10 +19,15 @@ import com.google.android.material.snackbar.Snackbar
 import kotlinx.coroutines.CancellationException
 import kotlinx.coroutines.launch
 
+/**
+ * Perfil del usuario (igual para los tres roles): editar nombre y teléfono, foto, activar la huella,
+ * cambiar entre tema claro y oscuro, cerrar sesión y eliminar la cuenta.
+ */
 class ProfileFragment : Fragment(R.layout.fragment_profile) {
 
     private lateinit var binding: FragmentProfileBinding
 
+    /** Recibe la foto tomada con la cámara y la muestra como avatar (solo en pantalla, no se guarda). */
     private val takePhoto = registerForActivityResult(ActivityResultContracts.TakePicturePreview()) {
         it?.let(binding.avatar::setImageBitmap)
     }
@@ -87,6 +92,7 @@ class ProfileFragment : Fragment(R.layout.fragment_profile) {
         }
     }
 
+    /** Cierra la sesión, limpia los datos en memoria y vuelve a la pantalla de acceso. */
     private fun leave() {
         AuthRepository.logout()
         SessionManager.current = null

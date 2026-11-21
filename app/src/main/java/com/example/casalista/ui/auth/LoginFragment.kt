@@ -23,6 +23,11 @@ import com.example.casalista.util.showBiometricPrompt
 import kotlinx.coroutines.CancellationException
 import kotlinx.coroutines.launch
 
+/**
+ * Pantalla de inicio de sesión. Valida el correo y la contraseña, entra con Firebase y
+ * abre la pantalla que corresponde al rol. También permite entrar con la huella cuando
+ * ya hay una sesión guardada.
+ */
 class LoginFragment : Fragment(R.layout.fragment_login) {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -37,6 +42,7 @@ class LoginFragment : Fragment(R.layout.fragment_login) {
         setupFingerprint(binding)
     }
 
+    /** Valida los campos y, si son correctos, inicia sesión; los errores se muestran en el campo. */
     private fun login(binding: FragmentLoginBinding) {
         val email = binding.emailInput.text.toString().trim()
         val password = binding.passwordInput.text.toString()
@@ -59,6 +65,7 @@ class LoginFragment : Fragment(R.layout.fragment_login) {
         }
     }
 
+    /** Guarda el usuario en la sesión y abre la pantalla de su rol, cerrando la de acceso. */
     private fun enter(user: User) {
         SessionManager.current = user
         val screen = when (user.role) {
@@ -70,6 +77,10 @@ class LoginFragment : Fragment(R.layout.fragment_login) {
         requireActivity().finish()
     }
 
+    /**
+     * Muestra el botón de huella solo si el dispositivo la soporta, el usuario la tiene
+     * activada y hay una sesión de Firebase guardada. Al validar la huella, entra sin contraseña.
+     */
     private fun setupFingerprint(binding: FragmentLoginBinding) {
         val session = SessionManager(requireContext())
         binding.fingerprintButton.isVisible =

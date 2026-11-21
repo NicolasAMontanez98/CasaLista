@@ -6,9 +6,14 @@ import androidx.biometric.BiometricPrompt
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 
+/** Indica si el dispositivo tiene un lector de huella disponible con una huella registrada. */
 fun Fragment.biometricAvailable() = BiometricManager.from(requireContext())
     .canAuthenticate(BIOMETRIC_STRONG) == BiometricManager.BIOMETRIC_SUCCESS
 
+/**
+ * Muestra el cuadro del sistema para pedir la huella. Ejecuta [onSuccess] solo si la
+ * huella es válida; si el usuario cancela o falla, no pasa nada.
+ */
 fun Fragment.showBiometricPrompt(title: String, cancelText: String, onSuccess: () -> Unit) {
     val prompt = BiometricPrompt(
         this,

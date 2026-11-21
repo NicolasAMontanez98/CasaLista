@@ -29,6 +29,11 @@ import com.google.firebase.auth.FirebaseAuth
 import kotlinx.coroutines.CancellationException
 import kotlinx.coroutines.launch
 
+/**
+ * Proceso de pago en cuatro pasos: 1) dirección del lote (a mano o con el GPS) y foto opcional,
+ * 2) método de pago, 3) confirmación con huella y cobro en ePayco, 4) resultado. El pedido solo se
+ * guarda cuando ePayco confirma el pago.
+ */
 class CheckoutFragment : Fragment(R.layout.fragment_checkout) {
 
     private lateinit var binding: FragmentCheckoutBinding
@@ -89,8 +94,13 @@ class CheckoutFragment : Fragment(R.layout.fragment_checkout) {
         showStep(0)
     }
 
+    /** Muestra un aviso corto en la parte inferior. */
     private fun showMessage(message: Int) = Snackbar.make(binding.root, message, Snackbar.LENGTH_SHORT).show()
 
+    /**
+     * Obtiene la ubicación del GPS, la convierte en dirección y la escribe en el campo;
+     * guarda las coordenadas para el pedido.
+     */
     private fun useMyLocation() {
         binding.locationButton.isEnabled = false
         binding.locationButton.setText(R.string.checkout_locating)
@@ -118,12 +128,14 @@ class CheckoutFragment : Fragment(R.layout.fragment_checkout) {
         }
     }
 
+    /** Avanza al paso del método de pago solo si la dirección no está vacía. */
     private fun goToMethodIfAddressValid() {
         val error = Validators.addressError(binding.addressInput.text.toString().trim())
         binding.addressLayout.error = error?.let(::getString)
         if (error == null) showStep(1)
     }
 
+    /** Muestra el paso indicado y ajusta la etiqueta y los botones. */
     private fun showStep(index: Int) {
         step = index
         listOf(binding.stepLot, binding.stepMethod, binding.stepConfirm, binding.stepResult)
@@ -137,6 +149,7 @@ class CheckoutFragment : Fragment(R.layout.fragment_checkout) {
         if (index == 2) showSummary()
     }
 
+    /** Escribe el resumen de la compra (total, dirección y método) antes de pagar. */
     private fun showSummary() {
         val method = binding.root.findViewById<RadioButton>(binding.methodGroup.checkedRadioButtonId)
         binding.summaryText.text = getString(
@@ -147,6 +160,10 @@ class CheckoutFragment : Fragment(R.layout.fragment_checkout) {
         )
     }
 
+    /**
+     * Abre el cobro en ePayco. Si ya hay un pago aprobado pendiente de guardar, solo reintenta guardar el pedido
+     * sin cobrar de nuevo.
+     */
     private fun approve() {
         paidRef?.let { return placeOrder(it) }
         if (BuildConfig.EPAYCO_KEY.isBlank()) return showMessage(R.string.pay_no_key)
@@ -165,6 +182,10 @@ class CheckoutFragment : Fragment(R.layout.fragment_checkout) {
         }
     }
 
+    /**
+     * Guarda los pedidos en Firestore con la referencia del pago, vacía el carrito y muestra el resultado.
+     * Si falla, avisa y deja reintentar sin volver a pagar.
+     */
     private fun placeOrder(ref: String) {
         val uid = FirebaseAuth.getInstance().currentUser?.uid ?: return
         binding.nextButton.isEnabled = false

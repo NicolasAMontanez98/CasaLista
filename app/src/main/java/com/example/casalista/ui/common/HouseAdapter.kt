@@ -12,11 +12,13 @@ import com.example.casalista.data.House
 import com.example.casalista.databinding.ItemHouseBinding
 import com.example.casalista.util.toPesos
 
+/** Adaptador de listas de casas: cada fila muestra la foto, el nombre, los datos, el precio y el estado. */
 class HouseAdapter(private val onClick: (House) -> Unit) :
     RecyclerView.Adapter<HouseAdapter.Holder>() {
 
     private var items = listOf<House>()
 
+    /** Reemplaza la lista y vuelve a dibujarla. */
     fun submitList(list: List<House>) {
         items = list
         notifyDataSetChanged()
@@ -24,11 +26,13 @@ class HouseAdapter(private val onClick: (House) -> Unit) :
 
     override fun getItemCount() = items.size
 
+    /** Guarda las vistas de una fila para reutilizarlas. */
     class Holder(val binding: ItemHouseBinding) : RecyclerView.ViewHolder(binding.root)
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int) =
         Holder(ItemHouseBinding.inflate(LayoutInflater.from(parent.context), parent, false))
 
+    /** Llena una fila: carga la primera foto con Glide o, si no hay, muestra el ícono de casa. */
     override fun onBindViewHolder(holder: Holder, position: Int) {
         val house = items[position]
         with(holder.binding) {

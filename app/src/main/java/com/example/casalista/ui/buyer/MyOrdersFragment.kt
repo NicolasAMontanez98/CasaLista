@@ -16,6 +16,7 @@ import com.google.firebase.auth.FirebaseAuth
 import kotlinx.coroutines.CancellationException
 import kotlinx.coroutines.launch
 
+/** Historial de compras: muestra los pedidos del comprador con su estado actual. */
 class MyOrdersFragment : Fragment(R.layout.fragment_my_orders) {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {

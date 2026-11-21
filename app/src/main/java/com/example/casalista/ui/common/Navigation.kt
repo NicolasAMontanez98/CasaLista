@@ -15,5 +15,6 @@ private val slide = navOptions {
     }
 }
 
+/** Navega a otra pantalla del grafo con una animación de deslizamiento, enviando [args] si hay. */
 fun Fragment.goTo(destinationId: Int, args: Bundle? = null) =
     findNavController().navigate(destinationId, args, slide)

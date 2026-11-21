@@ -31,6 +31,10 @@ import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import java.io.File
 
+/**
+ * Formulario para crear o editar un producto: datos de la casa, hasta 5 fotos (cámara o galería),
+ * guardar, pausar o reanudar y eliminar. Las fotos nuevas se comprimen y se suben a Firebase Storage al guardar.
+ */
 class ProductFormFragment : Fragment(R.layout.fragment_product_form) {
 
     private lateinit var binding: FragmentProductFormBinding
@@ -38,11 +42,13 @@ class ProductFormFragment : Fragment(R.layout.fragment_product_form) {
     private val newPhotos = mutableListOf<Uri>()
     private var cameraUri: Uri? = null
 
+    /** Recibe el resultado de la cámara: si se tomó la foto, la agrega a la lista. */
     private val takePhoto = registerForActivityResult(ActivityResultContracts.TakePicture()) { taken ->
         val uri = cameraUri
         if (taken && uri != null) addPhoto(uri)
     }
 
+    /** Recibe la foto elegida en la galería (selector del sistema, sin pedir permisos). */
     private val pickPhoto = registerForActivityResult(ActivityResultContracts.PickVisualMedia()) { uri ->
         if (uri != null) addPhoto(uri)
     }
@@ -64,9 +70,11 @@ class ProductFormFragment : Fragment(R.layout.fragment_product_form) {
         renderPhotos()
     }
 
+    /** Crea el adaptador de una lista desplegable con las opciones dadas. */
     private fun dropdown(options: List<String>) =
         ArrayAdapter(requireContext(), android.R.layout.simple_list_item_1, options)
 
+    /** Rellena los campos con los datos de la casa que se está editando. */
     private fun fill(house: House) {
         binding.nameInput.setText(house.name)
         binding.priceInput.setText(house.price.toString())
@@ -75,6 +83,7 @@ class ProductFormFragment : Fragment(R.layout.fragment_product_form) {
         if (savedPhotos.isEmpty()) savedPhotos.addAll(house.images)
     }
 
+    /** Pregunta si la foto viene de la cámara o la galería; no deja pasar de [MAX_PHOTOS] fotos. */
     private fun choosePhotoSource() {
         if (savedPhotos.size + newPhotos.size >= MAX_PHOTOS) {
             Toast.makeText(requireContext(), R.string.form_photo_max, Toast.LENGTH_SHORT).show()
@@ -91,6 +100,7 @@ class ProductFormFragment : Fragment(R.layout.fragment_product_form) {
             .show()
     }
 
+    /** Crea un archivo temporal, lo expone con FileProvider y lanza la cámara para que guarde la foto ahí. */
     private fun openCamera() {
         val folder = File(requireContext().cacheDir, "photos").apply { mkdirs() }
         val file = File.createTempFile("photo_", ".jpg", folder)
@@ -99,11 +109,13 @@ class ProductFormFragment : Fragment(R.layout.fragment_product_form) {
         takePhoto.launch(uri)
     }
 
+    /** Agrega una foto nueva (aún sin subir) y vuelve a dibujar las miniaturas. */
     private fun addPhoto(uri: Uri) {
         newPhotos.add(uri)
         renderPhotos()
     }
 
+    /** Dibuja las miniaturas de las fotos guardadas y las nuevas; al tocar una, se quita de la lista. */
     private fun renderPhotos() {
         binding.photoRow.removeAllViews()
         val size = resources.getDimensionPixelSize(R.dimen.thumbnail)
@@ -125,6 +137,10 @@ class ProductFormFragment : Fragment(R.layout.fragment_product_form) {
         }
     }
 
+    /**
+     * Valida los campos y guarda: comprime y sube las fotos nuevas, escribe la casa en Firestore y borra
+     * las fotos que se quitaron. Si algo falla, borra las fotos recién subidas para no dejar archivos sueltos.
+     */
     private fun save(current: House?) {
         val name = binding.nameInput.text.toString().trim()
         val price = binding.priceInput.text.toString()
@@ -178,6 +194,7 @@ class ProductFormFragment : Fragment(R.layout.fragment_product_form) {
         }
     }
 
+    /** Prepara los botones de pausar/reanudar y eliminar (con confirmación) cuando se edita una casa existente. */
     private fun setupEditing(house: House) {
         val paused = house.status == Status.PAUSED
         binding.pauseButton.isVisible = house.status != Status.REVIEW && house.status != Status.REJECTED
@@ -201,6 +218,7 @@ class ProductFormFragment : Fragment(R.layout.fragment_product_form) {
         }
     }
 
+    /** Ejecuta una acción en segundo plano y, si sale bien, vuelve a la pantalla anterior. */
     private fun finishWith(action: suspend () -> Unit) {
         setButtonsEnabled(false)
         viewLifecycleOwner.lifecycleScope.launch {
@@ -216,6 +234,7 @@ class ProductFormFragment : Fragment(R.layout.fragment_product_form) {
         }
     }
 
+    /** Activa o desactiva los botones mientras hay una operación en curso, para evitar toques repetidos. */
     private fun setButtonsEnabled(enabled: Boolean) {
         binding.saveButton.isEnabled = enabled
         binding.pauseButton.isEnabled = enabled
@@ -223,6 +242,7 @@ class ProductFormFragment : Fragment(R.layout.fragment_product_form) {
         binding.photoButton.isEnabled = enabled
     }
 
+    /** Muestra el mensaje de error que corresponde a la excepción. */
     private fun showError(e: Exception) {
         Toast.makeText(requireContext(), AuthRepository.errorMessage(e), Toast.LENGTH_SHORT).show()
     }

@@ -6,16 +6,22 @@ import android.widget.RadioButton
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
+import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
 import com.example.casalista.R
 import com.example.casalista.data.Cart
-import com.example.casalista.data.Datos
+import com.example.casalista.data.AuthRepository
+import com.example.casalista.data.OrderRepository
 import com.example.casalista.databinding.FragmentCheckoutBinding
 import com.example.casalista.util.SessionManager
 import com.example.casalista.util.Validators
 import com.example.casalista.util.biometricAvailable
 import com.example.casalista.util.showBiometricPrompt
 import com.example.casalista.util.toPesos
+import com.google.android.material.snackbar.Snackbar
+import com.google.firebase.auth.FirebaseAuth
+import kotlinx.coroutines.CancellationException
+import kotlinx.coroutines.launch
 
 class CheckoutFragment : Fragment(R.layout.fragment_checkout) {
 
@@ -86,14 +92,24 @@ class CheckoutFragment : Fragment(R.layout.fragment_checkout) {
     }
 
     private fun approve() {
-        val order = "CL-%05d".format(System.currentTimeMillis() % 100_000)
-        binding.resultMessage.text = getString(R.string.checkout_done_message, order)
-        Datos.placeOrders(
-            order,
-            SessionManager(requireContext()).user?.name.orEmpty(),
-            binding.addressInput.text.toString().trim(),
-        )
-        Cart.clear()
-        showStep(3)
+        val uid = FirebaseAuth.getInstance().currentUser?.uid ?: return
+        val code = "CL-%05d".format(System.currentTimeMillis() % 100_000)
+        binding.nextButton.isEnabled = false
+        viewLifecycleOwner.lifecycleScope.launch {
+            try {
+                OrderRepository.place(
+                    code, uid, SessionManager.current?.name.orEmpty(),
+                    binding.addressInput.text.toString().trim(), Cart.items,
+                )
+                binding.resultMessage.text = getString(R.string.checkout_done_message, code)
+                Cart.clear()
+                showStep(3)
+            } catch (e: CancellationException) {
+                throw e
+            } catch (e: Exception) {
+                binding.nextButton.isEnabled = true
+                Snackbar.make(binding.root, AuthRepository.errorMessage(e), Snackbar.LENGTH_SHORT).show()
+            }
+        }
     }
 }

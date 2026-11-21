@@ -6,6 +6,7 @@ import com.example.casalista.data.House
 import com.example.casalista.data.Order
 import com.example.casalista.data.OrderStatus
 import com.example.casalista.data.Role
+import com.example.casalista.data.SaleOrder
 import com.example.casalista.data.SampleHouses
 import com.example.casalista.data.Status
 import org.junit.Assert.assertEquals
@@ -64,30 +65,26 @@ class DatosTest {
     }
 
     @Test
-    fun cartBecomesPendingOrders() {
-        Cart.clear()
-        Cart.add(Datos.houses[0])
-        Cart.add(Datos.houses[0])
-        val before = Datos.orders.size
-        Datos.placeOrders("CL-00001", "Ana", "Lote 1")
-        val order = Datos.orders.last()
-        assertEquals(before + 1, Datos.orders.size)
-        assertEquals(Datos.houses[0].price * 2, order.total)
-        assertEquals(OrderStatus.PENDING, order.status)
-        Datos.orders.remove(order)
-        Cart.clear()
-    }
-
-    @Test
     fun housesInReviewAreHiddenFromBuyers() {
         assertEquals(emptyList<House>(), Datos.search("kiwi", null, Order.NAME))
         assertEquals(1, Datos.search("kiwi", null, Order.NAME, includePaused = true).size)
     }
 
     @Test
-    fun totalSalesLeavesOutCancelledOrders() {
-        val cancelled = Datos.orders.filter { it.status == OrderStatus.CANCELLED }.sumOf { it.total }
-        assertEquals(Datos.orders.sumOf { it.total } - cancelled, Datos.totalSales)
+    fun salesIgnoreCancelledOrdersAndGroupByMonth() {
+        val now = java.util.Calendar.getInstance().timeInMillis
+        val house = Datos.houses[0]
+        fun order(id: String, status: OrderStatus, total: Long) =
+            SaleOrder(id, "CL-1", "u", "Ana", house.id, house.name, 1, total, "Lote 1", status, now)
+        Datos.orders.addAll(listOf(order("a", OrderStatus.PENDING, 100), order("b", OrderStatus.CANCELLED, 50)))
+        try {
+            assertEquals(100L, Datos.totalSales)
+            assertEquals(100L, Datos.monthlySales(3).last().second)
+            assertEquals(0L, Datos.monthlySales(3).first().second)
+            assertEquals(listOf(house.system to 100L), Datos.salesBySystem())
+        } finally {
+            Datos.orders.clear()
+        }
     }
 
     @Test

@@ -9,6 +9,7 @@ import com.example.casalista.R
 import com.example.casalista.data.AuthRepository
 import com.example.casalista.data.Datos
 import com.example.casalista.data.HouseRepository
+import com.example.casalista.data.OrderRepository
 import com.example.casalista.databinding.FragmentSalesReportBinding
 import com.example.casalista.ui.common.addFilterChip
 import com.example.casalista.ui.common.selectedValue
@@ -26,11 +27,20 @@ class SalesReportFragment : Fragment(R.layout.fragment_sales_report) {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         val binding = FragmentSalesReportBinding.bind(view)
         var bySystem = listOf<Pair<String, Long>>()
+        fun refresh() {
+            val sales = Datos.monthlySales(months)
+            binding.monthlyChart.bars = sales
+            binding.monthlyChart.contentDescription = getString(R.string.report_chart_desc, months)
+            binding.periodTotal.text = getString(R.string.report_total, sales.sumOf { it.second }.toPesos())
+        }
+
         viewLifecycleOwner.lifecycleScope.launch {
             try {
                 HouseRepository.load()
+                OrderRepository.loadAll()
                 bySystem = Datos.salesBySystem()
                 binding.systemChart.bars = bySystem
+                refresh()
             } catch (e: CancellationException) {
                 throw e
             } catch (e: Exception) {
@@ -38,12 +48,6 @@ class SalesReportFragment : Fragment(R.layout.fragment_sales_report) {
             }
         }
 
-        fun refresh() {
-            val sales = Datos.monthlySales.takeLast(months)
-            binding.monthlyChart.bars = sales
-            binding.monthlyChart.contentDescription = getString(R.string.report_chart_desc, months)
-            binding.periodTotal.text = getString(R.string.report_total, sales.sumOf { it.second }.toPesos())
-        }
 
         binding.periodChips.addFilterChip(getString(R.string.report_period_3), "3", months == 3)
         binding.periodChips.addFilterChip(getString(R.string.report_period_6), "6", months == 6)
@@ -54,7 +58,7 @@ class SalesReportFragment : Fragment(R.layout.fragment_sales_report) {
         refresh()
 
         binding.csvButton.setOnClickListener {
-            val csv = salesCsv(Datos.monthlySales.takeLast(months), bySystem)
+            val csv = salesCsv(Datos.monthlySales(months), bySystem)
             val send = Intent(Intent.ACTION_SEND)
                 .setType("text/plain")
                 .putExtra(Intent.EXTRA_SUBJECT, getString(R.string.report_share_title))

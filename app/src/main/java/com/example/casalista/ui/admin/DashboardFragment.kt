@@ -7,6 +7,7 @@ import androidx.lifecycle.lifecycleScope
 import com.example.casalista.R
 import com.example.casalista.data.Datos
 import com.example.casalista.data.HouseRepository
+import com.example.casalista.data.OrderRepository
 import com.example.casalista.data.OrderStatus
 import com.example.casalista.data.Status
 import com.example.casalista.data.UserRepository
@@ -19,12 +20,9 @@ class DashboardFragment : Fragment(R.layout.fragment_dashboard) {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         val binding = FragmentDashboardBinding.bind(view)
-        binding.salesValue.text = Datos.totalSales.toPesos()
-        binding.ordersValue.text = Datos.orders.size.toString()
-        binding.salesChart.bars = Datos.monthlySales
-        binding.pendingOrders.text = getString(
-            R.string.dash_pending_orders, Datos.orders.count { it.status == OrderStatus.PENDING },
-        )
+        binding.salesValue.text = "…"
+        binding.ordersValue.text = "…"
+        binding.pendingOrders.text = ""
         binding.usersValue.text = "…"
         binding.productsValue.text = "…"
         binding.pendingProducts.text = ""
@@ -33,6 +31,13 @@ class DashboardFragment : Fragment(R.layout.fragment_dashboard) {
             try {
                 HouseRepository.seedIfEmpty()
                 HouseRepository.load()
+                OrderRepository.loadAll()
+                binding.salesValue.text = Datos.totalSales.toPesos()
+                binding.ordersValue.text = Datos.orders.size.toString()
+                binding.salesChart.bars = Datos.monthlySales(6)
+                binding.pendingOrders.text = getString(
+                    R.string.dash_pending_orders, Datos.orders.count { it.status == OrderStatus.PENDING },
+                )
                 binding.productsValue.text = Datos.published.size.toString()
                 binding.pendingProducts.text = getString(
                     R.string.dash_pending_products, Datos.houses.count { it.status == Status.REVIEW },
@@ -43,6 +48,8 @@ class DashboardFragment : Fragment(R.layout.fragment_dashboard) {
             } catch (e: Exception) {
                 binding.usersValue.text = "—"
                 binding.productsValue.text = "—"
+                binding.salesValue.text = "—"
+                binding.ordersValue.text = "—"
             }
         }
     }

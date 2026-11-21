@@ -37,10 +37,8 @@
     <string name="empty_users">No hay usuarios con esos filtros</string>
     <string name="catalog_order">Ordenar por</string>
     <string name="house_details">%1$d m² · %2$d hab. · %3$s</string>
+    <string name="detail_photo">Foto %1$d de la casa</string>
     <string name="detail_back">Volver</string>
-    <string name="detail_photo_1">Foto 1 de la casa</string>
-    <string name="detail_photo_2">Foto 2 de la casa</string>
-    <string name="detail_photo_3">Foto 3 de la casa</string>
     <string name="detail_finishes">Acabados incluidos</string>
     <string name="detail_add">Agregar al carrito</string>
     <string name="cart_added">Agregada al carrito</string>
@@ -108,8 +106,11 @@
     <string name="form_bedrooms">Habitaciones</string>
     <string name="form_system">Sistema constructivo</string>
     <string name="form_status">Estado</string>
+    <string name="form_photo_camera">Cámara</string>
+    <string name="form_photo_gallery">Galería</string>
+    <string name="form_photo_max">Máximo 5 fotos por producto</string>
     <string name="form_photo">Agregar foto</string>
-    <string name="form_photo_desc">Foto del producto</string>
+    <string name="form_photo_desc">Foto del producto. Toca para quitarla</string>
     <string name="form_save">Guardar</string>
     <string name="form_pause">Pausar publicación</string>
     <string name="form_resume">Reactivar publicación</string>
@@ -135,6 +136,7 @@
     <string name="error_generic">Algo salió mal. Inténtalo de nuevo</string>
     <string name="error_recent_login">Por seguridad, cierra sesión, vuelve a ingresar e inténtalo otra vez</string>
     <string name="error_account_missing">Esta cuenta ya no existe. Contacta al administrador</string>
+    <string name="error_upload">No se pudo subir la foto. Revisa tu conexión e inténtalo otra vez</string>
     <string name="error_suspended">Tu cuenta está suspendida</string>
     <string name="review_approve">Aprobar</string>
     <string name="review_reject">Rechazar</string>

@@ -4,8 +4,11 @@ import android.content.Intent
 import android.os.Bundle
 import android.view.View
 import androidx.fragment.app.Fragment
+import androidx.lifecycle.lifecycleScope
 import com.example.casalista.R
+import com.example.casalista.data.AuthRepository
 import com.example.casalista.data.Datos
+import com.example.casalista.data.HouseRepository
 import com.example.casalista.databinding.FragmentSalesReportBinding
 import com.example.casalista.ui.common.addFilterChip
 import com.example.casalista.ui.common.selectedValue
@@ -13,6 +16,8 @@ import com.example.casalista.util.salesCsv
 import com.example.casalista.util.toPesos
 import com.google.android.material.chip.ChipGroup
 import com.google.android.material.snackbar.Snackbar
+import kotlinx.coroutines.CancellationException
+import kotlinx.coroutines.launch
 
 class SalesReportFragment : Fragment(R.layout.fragment_sales_report) {
 
@@ -20,8 +25,18 @@ class SalesReportFragment : Fragment(R.layout.fragment_sales_report) {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         val binding = FragmentSalesReportBinding.bind(view)
-        val bySystem = Datos.salesBySystem()
-        binding.systemChart.bars = bySystem
+        var bySystem = listOf<Pair<String, Long>>()
+        viewLifecycleOwner.lifecycleScope.launch {
+            try {
+                HouseRepository.load()
+                bySystem = Datos.salesBySystem()
+                binding.systemChart.bars = bySystem
+            } catch (e: CancellationException) {
+                throw e
+            } catch (e: Exception) {
+                Snackbar.make(view, AuthRepository.errorMessage(e), Snackbar.LENGTH_SHORT).show()
+            }
+        }
 
         fun refresh() {
             val sales = Datos.monthlySales.takeLast(months)

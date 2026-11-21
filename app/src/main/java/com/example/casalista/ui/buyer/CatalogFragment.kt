@@ -3,17 +3,23 @@ package com.example.casalista.ui.buyer
 import android.os.Bundle
 import android.view.View
 import android.widget.ArrayAdapter
+import android.widget.Toast
 import androidx.core.view.isVisible
 import androidx.core.widget.doAfterTextChanged
 import androidx.fragment.app.Fragment
+import androidx.lifecycle.lifecycleScope
 import com.example.casalista.R
+import com.example.casalista.data.AuthRepository
 import com.example.casalista.data.Datos
+import com.example.casalista.data.HouseRepository
 import com.example.casalista.data.Order
 import com.example.casalista.databinding.FragmentCatalogBinding
 import com.example.casalista.ui.common.HouseAdapter
 import com.example.casalista.ui.common.addFilterChip
 import com.example.casalista.ui.common.selectedValue
 import com.google.android.material.chip.ChipGroup
+import kotlinx.coroutines.CancellationException
+import kotlinx.coroutines.launch
 
 class CatalogFragment : Fragment(R.layout.fragment_catalog) {
 
@@ -35,8 +41,6 @@ class CatalogFragment : Fragment(R.layout.fragment_catalog) {
         binding.searchInput.setText(arguments?.getString("query"))
         binding.searchInput.doAfterTextChanged { refresh() }
 
-        binding.filterChips.addFilterChip(getString(R.string.catalog_all), null, system == null)
-        Datos.systems.forEach { binding.filterChips.addFilterChip(it, it, it == system) }
         binding.filterChips.setOnCheckedStateChangeListener { group, ids ->
             system = (group as ChipGroup).selectedValue(ids)
             refresh()
@@ -52,6 +56,17 @@ class CatalogFragment : Fragment(R.layout.fragment_catalog) {
             refresh()
         }
 
-        refresh()
+        viewLifecycleOwner.lifecycleScope.launch {
+            try {
+                HouseRepository.load()
+                binding.filterChips.addFilterChip(getString(R.string.catalog_all), null, system == null)
+                Datos.systems.forEach { binding.filterChips.addFilterChip(it, it, it == system) }
+                refresh()
+            } catch (e: CancellationException) {
+                throw e
+            } catch (e: Exception) {
+                Toast.makeText(requireContext(), AuthRepository.errorMessage(e), Toast.LENGTH_SHORT).show()
+            }
+        }
     }
 }

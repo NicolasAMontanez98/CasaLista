@@ -13,13 +13,14 @@ data class User(var name: String, val email: String, var role: Role) {
 }
 
 data class House(
-    val id: Int,
+    val id: String,
     val name: String,
     val price: Long,
     val area: Int,
     val bedrooms: Int,
     val system: String,
     val status: String,
+    val images: List<String> = emptyList(),
 ) {
     val inStock get() = status != Status.SOLD_OUT
 }
@@ -76,20 +77,7 @@ data class SaleOrder(
 )
 
 object Datos {
-    val houses = mutableListOf(
-        House(1, "Casa Aurora", 68_000_000, 45, 2, "Steel framing", "Disponible"),
-        House(2, "Casa Brisa", 89_000_000, 60, 2, "Steel framing", "Disponible"),
-        House(3, "Casa Cumbre", 120_000_000, 80, 3, "Panel SIP", "Disponible"),
-        House(4, "Casa Dalia", 142_000_000, 95, 3, "Panel SIP", "Sobre pedido"),
-        House(5, "Casa Eucalipto", 178_000_000, 110, 4, "Madera", "Disponible"),
-        House(6, "Casa Fénix", 52_000_000, 36, 1, "Contenedor", "Disponible"),
-        House(7, "Casa Guadua", 95_000_000, 70, 3, "Guadua", "Disponible"),
-        House(8, "Casa Horizonte", 210_000_000, 130, 4, "Steel framing", "Sobre pedido"),
-        House(9, "Casa Isla", 74_000_000, 55, 2, "Contenedor", "Agotada"),
-        House(10, "Casa Jacaranda", 250_000_000, 150, 5, "Madera", "Disponible"),
-        House(11, "Casa Kiwi", 98_000_000, 65, 2, "Guadua", Status.REVIEW),
-        House(12, "Casa Laurel", 135_000_000, 85, 3, "Madera", Status.REVIEW),
-    )
+    val houses = mutableListOf<House>()
 
     val monthlySales = listOf(
         "Jun" to 210_000_000L,
@@ -150,19 +138,17 @@ object Datos {
         "Techo en teja termoacústica",
     )
 
-    fun nextHouseId() = (houses.maxOfOrNull { it.id } ?: 0) + 1
-
     fun saveHouse(house: House) {
         val index = houses.indexOfFirst { it.id == house.id }
         if (index >= 0) houses[index] = house else houses.add(house)
     }
 
-    fun reviewHouse(id: Int, approved: Boolean) {
+    fun reviewHouse(id: String, approved: Boolean) {
         val house = houses.first { it.id == id }
         saveHouse(house.copy(status = if (approved) Status.AVAILABLE else Status.REJECTED))
     }
 
-    fun deleteHouse(id: Int) {
+    fun deleteHouse(id: String) {
         houses.removeAll { it.id == id }
         Cart.remove(id)
     }

@@ -4,7 +4,7 @@ data class CartItem(val house: House, val quantity: Int)
 
 object Cart {
     private const val MAX_QUANTITY = 9
-    private val quantities = linkedMapOf<Int, Int>()
+    private val quantities = linkedMapOf<String, Int>()
 
     val items: List<CartItem>
         get() {
@@ -20,11 +20,11 @@ object Cart {
 
     fun add(house: House) = setQuantity(house.id, (quantities[house.id] ?: 0) + 1)
 
-    fun setQuantity(houseId: Int, quantity: Int) {
+    fun setQuantity(houseId: String, quantity: Int) {
         quantities[houseId] = quantity.coerceIn(1, MAX_QUANTITY)
     }
 
-    fun remove(houseId: Int) {
+    fun remove(houseId: String) {
         quantities.remove(houseId)
     }
 

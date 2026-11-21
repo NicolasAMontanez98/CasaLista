@@ -27,6 +27,8 @@ android {
         versionName = "1.0.0"
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
+        buildConfigField("String", "EPAYCO_KEY", "\"${localProperties.getProperty("epayco.publicKey", "")}\"")
+        buildConfigField("long", "EPAYCO_TEST_AMOUNT", "${localProperties.getProperty("epayco.testAmount", "50000")}L")
     }
 
     signingConfigs {
@@ -54,11 +56,13 @@ android {
         targetCompatibility = JavaVersion.VERSION_11
     }
     buildFeatures {
+        buildConfig = true
         viewBinding = true
     }
 }
 
 dependencies {
+    testImplementation(libs.json)
     implementation(libs.androidx.activity.ktx)
     implementation(libs.androidx.appcompat)
     implementation(libs.androidx.biometric)

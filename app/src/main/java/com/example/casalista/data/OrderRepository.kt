@@ -18,7 +18,7 @@ object OrderRepository {
 
     suspend fun place(
         code: String, uid: String, buyer: String, address: String,
-        items: List<CartItem>, lat: Double?, lng: Double?,
+        items: List<CartItem>, lat: Double?, lng: Double?, paymentRef: String,
     ) {
         val db = FirebaseFirestore.getInstance()
         val batch = db.batch()
@@ -26,7 +26,7 @@ object OrderRepository {
         items.forEach { item ->
             val order = SaleOrder(
                 orders.document().id, code, uid, buyer, item.house.id, item.house.name, item.quantity,
-                item.house.price * item.quantity, address, OrderStatus.PENDING, now, lat, lng,
+                item.house.price * item.quantity, address, OrderStatus.PENDING, now, lat, lng, paymentRef,
             )
             batch.set(orders.document(order.id), order.toMap())
         }
@@ -40,6 +40,7 @@ object OrderRepository {
 
     private fun SaleOrder.toMap() = mapOf(
         "lat" to lat,
+        "paymentRef" to paymentRef,
         "lng" to lng,
         "code" to code,
         "buyerUid" to buyerUid,
@@ -67,5 +68,6 @@ object OrderRepository {
         createdAt = getLong("createdAt") ?: 0,
         lat = getDouble("lat"),
         lng = getDouble("lng"),
+        paymentRef = getString("paymentRef").orEmpty(),
     )
 }

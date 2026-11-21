@@ -59,6 +59,14 @@
     <string name="checkout_location_failed">No se pudo obtener la ubicación. Revisa que el GPS esté activo.</string>
     <string name="order_open_map">Ver ubicación en el mapa</string>
     <string name="order_no_map_app">No hay una aplicación de mapas instalada</string>
+    <string name="pay_description">Compra en CasaLista</string>
+    <string name="pay_cancel">Cancelar pago</string>
+    <string name="pay_no_key">Falta la llave de ePayco: agrega epayco.publicKey en local.properties</string>
+    <string name="pay_cancelled">Pago cancelado. No se cobró nada.</string>
+    <string name="pay_rejected">El pago fue rechazado. Prueba con otra tarjeta.</string>
+    <string name="pay_pending">El pago quedó pendiente de validación. Todavía no se creó el pedido.</string>
+    <string name="pay_failed">No se pudo confirmar el pago. Intenta de nuevo.</string>
+    <string name="pay_saved_failed">Tu pago fue aprobado (ref. %1$s) pero no se pudo guardar el pedido. Pulsa Confirmar pago para reintentar sin volver a pagar.</string>
     <string name="checkout_photo">Tomar foto del lote (opcional)</string>
     <string name="checkout_photo_desc">Foto del lote</string>
     <string name="checkout_method_title">Método de pago</string>

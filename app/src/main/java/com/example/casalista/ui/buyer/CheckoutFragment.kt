@@ -10,10 +10,12 @@ import androidx.core.widget.doAfterTextChanged
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
+import com.example.casalista.BuildConfig
 import com.example.casalista.R
 import com.example.casalista.data.Cart
-import com.example.casalista.data.AuthRepository
+import com.example.casalista.data.Epayco
 import com.example.casalista.data.OrderRepository
+import com.example.casalista.data.PaymentState
 import com.example.casalista.databinding.FragmentCheckoutBinding
 import com.example.casalista.util.SessionManager
 import com.example.casalista.util.Validators
@@ -35,6 +37,8 @@ class CheckoutFragment : Fragment(R.layout.fragment_checkout) {
     private var lat: Double? = null
     private var lng: Double? = null
     private var typingByUser = true
+    private var code = ""
+    private var paidRef: String? = null
 
     private val askLocation = registerForActivityResult(ActivityResultContracts.RequestMultiplePermissions()) { granted ->
         if (granted.values.any { it }) useMyLocation() else showMessage(R.string.checkout_location_denied)
@@ -144,23 +148,41 @@ class CheckoutFragment : Fragment(R.layout.fragment_checkout) {
     }
 
     private fun approve() {
+        paidRef?.let { return placeOrder(it) }
+        if (BuildConfig.EPAYCO_KEY.isBlank()) return showMessage(R.string.pay_no_key)
+        code = "CL-%05d".format(System.currentTimeMillis() % 100_000)
+        showPayment(code, Epayco.chargeAmount(Cart.total)) { result ->
+            when (result?.state) {
+                PaymentState.APPROVED -> {
+                    paidRef = result.ref
+                    placeOrder(result.ref)
+                }
+                PaymentState.REJECTED -> showMessage(R.string.pay_rejected)
+                PaymentState.PENDING -> showMessage(R.string.pay_pending)
+                PaymentState.FAILED -> showMessage(R.string.pay_failed)
+                null -> showMessage(R.string.pay_cancelled)
+            }
+        }
+    }
+
+    private fun placeOrder(ref: String) {
         val uid = FirebaseAuth.getInstance().currentUser?.uid ?: return
-        val code = "CL-%05d".format(System.currentTimeMillis() % 100_000)
         binding.nextButton.isEnabled = false
         viewLifecycleOwner.lifecycleScope.launch {
             try {
                 OrderRepository.place(
                     code, uid, SessionManager.current?.name.orEmpty(),
-                    binding.addressInput.text.toString().trim(), Cart.items, lat, lng,
+                    binding.addressInput.text.toString().trim(), Cart.items, lat, lng, ref,
                 )
                 binding.resultMessage.text = getString(R.string.checkout_done_message, code)
+                paidRef = null
                 Cart.clear()
                 showStep(3)
             } catch (e: CancellationException) {
                 throw e
             } catch (e: Exception) {
                 binding.nextButton.isEnabled = true
-                Snackbar.make(binding.root, AuthRepository.errorMessage(e), Snackbar.LENGTH_SHORT).show()
+                Snackbar.make(binding.root, getString(R.string.pay_saved_failed, ref), Snackbar.LENGTH_LONG).show()
             }
         }
     }

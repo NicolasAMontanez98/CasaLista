@@ -81,6 +81,7 @@ data class SaleOrder(
     val createdAt: Long,
     val lat: Double? = null,
     val lng: Double? = null,
+    val paymentRef: String = "",
 )
 
 object Datos {

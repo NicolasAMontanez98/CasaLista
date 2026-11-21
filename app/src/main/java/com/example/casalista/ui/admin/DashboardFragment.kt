@@ -3,12 +3,16 @@ package com.example.casalista.ui.admin
 import android.os.Bundle
 import android.view.View
 import androidx.fragment.app.Fragment
+import androidx.lifecycle.lifecycleScope
 import com.example.casalista.R
 import com.example.casalista.data.Datos
 import com.example.casalista.data.OrderStatus
 import com.example.casalista.data.Status
+import com.example.casalista.data.UserRepository
 import com.example.casalista.databinding.FragmentDashboardBinding
 import com.example.casalista.util.toPesos
+import kotlinx.coroutines.CancellationException
+import kotlinx.coroutines.launch
 
 class DashboardFragment : Fragment(R.layout.fragment_dashboard) {
 
@@ -16,7 +20,16 @@ class DashboardFragment : Fragment(R.layout.fragment_dashboard) {
         val binding = FragmentDashboardBinding.bind(view)
         binding.salesValue.text = Datos.totalSales.toPesos()
         binding.ordersValue.text = Datos.orders.size.toString()
-        binding.usersValue.text = Datos.users.size.toString()
+        binding.usersValue.text = "…"
+        viewLifecycleOwner.lifecycleScope.launch {
+            try {
+                binding.usersValue.text = UserRepository.getAll().size.toString()
+            } catch (e: CancellationException) {
+                throw e
+            } catch (e: Exception) {
+                binding.usersValue.text = "—"
+            }
+        }
         binding.productsValue.text = Datos.published.size.toString()
         binding.salesChart.bars = Datos.monthlySales
         binding.pendingOrders.text = getString(

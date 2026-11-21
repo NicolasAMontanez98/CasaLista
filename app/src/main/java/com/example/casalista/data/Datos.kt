@@ -6,7 +6,7 @@ enum class Role(val label: String) {
     ADMIN("Administrador"),
 }
 
-data class User(var name: String, val email: String, var password: String, var role: Role) {
+data class User(var name: String, val email: String, var role: Role) {
     var phone = ""
     var active = true
     var uid = ""
@@ -100,12 +100,6 @@ object Datos {
         "Nov" to 520_000_000L,
     )
 
-    val users = mutableListOf(
-        User("Ana Compradora", "comprador@casalista.co", "123456", Role.BUYER),
-        User("Vicente Vendedor", "vendedor@casalista.co", "123456", Role.SELLER),
-        User("Adriana Admin", "admin@casalista.co", "123456", Role.ADMIN),
-    )
-
     val orders = mutableListOf(
         SaleOrder(1, "CL-10231", "Ana Compradora", "Casa Aurora", 1, 68_000_000, "Lote 12, vereda La Mesa", OrderStatus.PENDING),
         SaleOrder(2, "CL-10232", "Carlos Rojas", "Casa Brisa", 1, 89_000_000, "Calle 8 #4-20, Chía", OrderStatus.PENDING),
@@ -192,17 +186,4 @@ object Datos {
             Order.NAME -> found.sortedBy { it.name }
         }
     }
-
-    fun searchUsers(query: String, role: Role?): List<User> {
-        val text = query.trim()
-        return users
-            .filter { role == null || it.role == role }
-            .filter { it.name.contains(text, ignoreCase = true) || it.email.contains(text, ignoreCase = true) }
-            .sortedBy { it.name }
-    }
-
-    fun findByEmail(email: String): User? = users.find { it.email.equals(email, ignoreCase = true) }
-
-    fun login(email: String, password: String): User? =
-        findByEmail(email)?.takeIf { it.password == password }
 }

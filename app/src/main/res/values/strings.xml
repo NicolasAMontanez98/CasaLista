@@ -134,12 +134,12 @@
     <string name="error_network">Sin conexión. Revisa tu internet e inténtalo otra vez</string>
     <string name="error_generic">Algo salió mal. Inténtalo de nuevo</string>
     <string name="error_recent_login">Por seguridad, cierra sesión, vuelve a ingresar e inténtalo otra vez</string>
+    <string name="error_account_missing">Esta cuenta ya no existe. Contacta al administrador</string>
     <string name="error_suspended">Tu cuenta está suspendida</string>
     <string name="review_approve">Aprobar</string>
     <string name="review_reject">Rechazar</string>
     <string name="review_empty">No hay productos por revisar</string>
     <string name="user_role">Rol</string>
-    <string name="user_password_optional">Nueva contraseña (opcional)</string>
     <string name="error_email_taken">Ya existe un usuario con ese correo</string>
     <string name="report_period_3">Últimos 3 meses</string>
     <string name="report_period_6">Últimos 6 meses</string>

@@ -8,11 +8,12 @@ import com.google.firebase.auth.FirebaseAuthInvalidUserException
 import com.google.firebase.auth.FirebaseAuthRecentLoginRequiredException
 import com.google.firebase.auth.FirebaseAuthUserCollisionException
 import com.google.firebase.auth.FirebaseAuthWeakPasswordException
-import com.google.firebase.firestore.DocumentSnapshot
 import com.google.firebase.firestore.FirebaseFirestore
 import kotlinx.coroutines.tasks.await
 
 class SuspendedAccountException : Exception()
+
+class AccountNotFoundException : Exception()
 
 object AuthRepository {
     private val auth = FirebaseAuth.getInstance()
@@ -22,10 +23,10 @@ object AuthRepository {
 
     suspend fun register(name: String, email: String, password: String) {
         val firebaseUser = auth.createUserWithEmailAndPassword(email, password).await().user!!
-        val user = User(name, email, "", Role.BUYER)
+        val user = User(name, email, Role.BUYER)
         user.uid = firebaseUser.uid
         try {
-            users.document(user.uid).set(toMap(user)).await()
+            users.document(user.uid).set(user.toMap()).await()
         } catch (e: Exception) {
             runCatching { firebaseUser.delete().await() }
             throw e
@@ -41,15 +42,12 @@ object AuthRepository {
     suspend fun loadCurrent(): User {
         val firebaseUser = auth.currentUser ?: throw IllegalStateException("No hay sesión")
         val ref = users.document(firebaseUser.uid)
-        var doc = ref.get().await()
+        val doc = ref.get().await()
         if (!doc.exists()) {
-            val email = firebaseUser.email.orEmpty()
-            val newUser = User(email.substringBefore("@"), email, "", Role.BUYER)
-            newUser.uid = firebaseUser.uid
-            ref.set(toMap(newUser)).await()
-            doc = ref.get().await()
+            auth.signOut()
+            throw AccountNotFoundException()
         }
-        val user = toUser(doc)
+        val user = doc.toUser()
         if (!user.active) {
             auth.signOut()
             throw SuspendedAccountException()
@@ -77,7 +75,7 @@ object AuthRepository {
         try {
             auth.currentUser?.delete()?.await()
         } catch (e: Exception) {
-            ref.set(toMap(user)).await()
+            ref.set(user.toMap()).await()
             throw e
         }
     }
@@ -88,24 +86,9 @@ object AuthRepository {
         is FirebaseAuthWeakPasswordException -> R.string.error_password_short
         is FirebaseAuthRecentLoginRequiredException -> R.string.error_recent_login
         is SuspendedAccountException -> R.string.error_suspended
+        is AccountNotFoundException -> R.string.error_account_missing
         is FirebaseNetworkException -> R.string.error_network
         else -> R.string.error_generic
     }
 
-    private fun toMap(user: User) = mapOf(
-        "name" to user.name,
-        "email" to user.email,
-        "role" to user.role.name,
-        "phone" to user.phone,
-        "active" to user.active,
-    )
-
-    private fun toUser(doc: DocumentSnapshot): User {
-        val role = Role.entries.find { it.name == doc.getString("role") } ?: Role.BUYER
-        val user = User(doc.getString("name").orEmpty(), doc.getString("email").orEmpty(), "", role)
-        user.uid = doc.id
-        user.phone = doc.getString("phone").orEmpty()
-        user.active = doc.getBoolean("active") ?: true
-        return user
-    }
 }

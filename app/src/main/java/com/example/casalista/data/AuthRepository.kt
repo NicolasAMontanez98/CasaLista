@@ -9,6 +9,7 @@ import com.google.firebase.auth.FirebaseAuthRecentLoginRequiredException
 import com.google.firebase.auth.FirebaseAuthUserCollisionException
 import com.google.firebase.auth.FirebaseAuthWeakPasswordException
 import com.google.firebase.firestore.FirebaseFirestore
+import com.google.firebase.storage.StorageException
 import kotlinx.coroutines.tasks.await
 
 class SuspendedAccountException : Exception()
@@ -88,6 +89,7 @@ object AuthRepository {
         is SuspendedAccountException -> R.string.error_suspended
         is AccountNotFoundException -> R.string.error_account_missing
         is FirebaseNetworkException -> R.string.error_network
+        is StorageException -> R.string.error_upload
         else -> R.string.error_generic
     }
 

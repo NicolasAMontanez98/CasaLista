@@ -2,16 +2,21 @@ package com.example.casalista
 
 import com.example.casalista.data.Cart
 import com.example.casalista.data.Datos
+import com.example.casalista.data.SampleHouses
 import org.junit.Assert.assertEquals
 import org.junit.Before
 import org.junit.Test
 
 class CartTest {
-    private val aurora = Datos.houses[0]
-    private val brisa = Datos.houses[1]
+    private val aurora = SampleHouses.all[0]
+    private val brisa = SampleHouses.all[1]
 
     @Before
-    fun emptyCart() = Cart.clear()
+    fun resetState() {
+        Datos.houses.clear()
+        Datos.houses.addAll(SampleHouses.all)
+        Cart.clear()
+    }
 
     @Test
     fun addingTwiceRaisesQuantityAndTotal() {

@@ -24,28 +24,17 @@
             android:paddingBottom="@dimen/space_lg">
 
             <HorizontalScrollView
+                android:id="@+id/galleryScroll"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:scrollbars="none">
 
                 <LinearLayout
+                    android:id="@+id/gallery"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:orientation="horizontal"
-                    android:paddingHorizontal="@dimen/space_md">
-
-                    <ImageView
-                        style="@style/Widget.CasaLista.GalleryImage"
-                        android:contentDescription="@string/detail_photo_1" />
-
-                    <ImageView
-                        style="@style/Widget.CasaLista.GalleryImage"
-                        android:contentDescription="@string/detail_photo_2" />
-
-                    <ImageView
-                        style="@style/Widget.CasaLista.GalleryImage"
-                        android:contentDescription="@string/detail_photo_3" />
-                </LinearLayout>
+                    android:paddingHorizontal="@dimen/space_md" />
             </HorizontalScrollView>
 
             <TextView

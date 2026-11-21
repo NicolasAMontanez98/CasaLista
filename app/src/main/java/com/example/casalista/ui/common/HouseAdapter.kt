@@ -1,8 +1,12 @@
 package com.example.casalista.ui.common
 
+import android.content.res.ColorStateList
 import android.view.LayoutInflater
 import android.view.ViewGroup
+import android.widget.ImageView
+import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.RecyclerView
+import com.bumptech.glide.Glide
 import com.example.casalista.R
 import com.example.casalista.data.House
 import com.example.casalista.databinding.ItemHouseBinding
@@ -34,6 +38,18 @@ class HouseAdapter(private val onClick: (House) -> Unit) :
             )
             housePrice.text = house.price.toPesos()
             houseStatus.text = house.status
+            val photo = house.images.firstOrNull()
+            if (photo == null) {
+                Glide.with(houseImage).clear(houseImage)
+                houseImage.setImageResource(R.drawable.ic_home)
+                houseImage.scaleType = ImageView.ScaleType.CENTER_INSIDE
+                houseImage.imageTintList =
+                    ColorStateList.valueOf(ContextCompat.getColor(root.context, R.color.gold))
+            } else {
+                houseImage.imageTintList = null
+                houseImage.scaleType = ImageView.ScaleType.CENTER_CROP
+                Glide.with(houseImage).load(photo).into(houseImage)
+            }
             root.setOnClickListener { onClick(house) }
         }
     }

@@ -6,12 +6,20 @@ import com.example.casalista.data.House
 import com.example.casalista.data.Order
 import com.example.casalista.data.OrderStatus
 import com.example.casalista.data.Role
+import com.example.casalista.data.SampleHouses
 import com.example.casalista.data.Status
 import org.junit.Assert.assertEquals
 import org.junit.Assert.assertNull
+import org.junit.Before
 import org.junit.Test
 
 class DatosTest {
+
+    @Before
+    fun loadSampleHouses() {
+        Datos.houses.clear()
+        Datos.houses.addAll(SampleHouses.all)
+    }
 
     @Test
     fun searchFiltersByNameAndSystem() {
@@ -27,7 +35,7 @@ class DatosTest {
 
     @Test
     fun savedHouseIsListedAndDeletedHouseIsGone() {
-        val house = House(Datos.nextHouseId(), "Casa Prueba", 1, 1, 1, "Madera", Status.AVAILABLE)
+        val house = House("prueba", "Casa Prueba", 1, 1, 1, "Madera", Status.AVAILABLE)
         Datos.saveHouse(house)
         assertEquals(listOf(house), Datos.search("prueba", null, Order.NAME))
         Datos.deleteHouse(house.id)

@@ -1,5 +1,8 @@
 package com.example.casalista.ui.seller
 
+import android.content.ActivityNotFoundException
+import android.content.Intent
+import android.net.Uri
 import android.os.Bundle
 import android.view.View
 import androidx.core.view.isVisible
@@ -29,6 +32,7 @@ class OrderDetailFragment : Fragment(R.layout.fragment_order_detail) {
             Datos.orders.first { it.id == orderId }.status.next?.let(::changeStatus)
         }
         binding.cancelButton.setOnClickListener { confirmCancel() }
+        binding.mapButton.setOnClickListener { openMap() }
         render()
     }
 
@@ -46,6 +50,17 @@ class OrderDetailFragment : Fragment(R.layout.fragment_order_detail) {
             binding.advanceButton.isEnabled = true
             binding.cancelButton.isEnabled = true
             render()
+        }
+    }
+
+    private fun openMap() {
+        val order = Datos.orders.first { it.id == orderId }
+        val label = Uri.encode(order.address)
+        val map = Intent(Intent.ACTION_VIEW, Uri.parse("geo:${order.lat},${order.lng}?q=${order.lat},${order.lng}($label)"))
+        try {
+            startActivity(map)
+        } catch (e: ActivityNotFoundException) {
+            Snackbar.make(binding.root, R.string.order_no_map_app, Snackbar.LENGTH_SHORT).show()
         }
     }
 
@@ -75,5 +90,6 @@ class OrderDetailFragment : Fragment(R.layout.fragment_order_detail) {
             else -> Unit
         }
         binding.cancelButton.isVisible = order.status.canCancel
+        binding.mapButton.isVisible = order.lat != null && order.lng != null
     }
 }

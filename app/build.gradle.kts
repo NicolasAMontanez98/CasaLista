@@ -74,6 +74,7 @@ dependencies {
     implementation(libs.firebase.storage)
     implementation(libs.kotlinx.coroutines.android)
     implementation(libs.glide)
+    implementation(libs.play.services.location)
     implementation(libs.kotlinx.coroutines.play.services)
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.espresso.core)

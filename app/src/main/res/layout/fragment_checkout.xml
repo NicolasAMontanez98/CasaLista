@@ -58,6 +58,14 @@
                 </com.google.android.material.textfield.TextInputLayout>
 
                 <Button
+                    android:id="@+id/locationButton"
+                    style="?attr/materialButtonOutlinedStyle"
+                    android:layout_width="match_parent"
+                    android:layout_height="@dimen/button_height"
+                    android:layout_marginTop="@dimen/space_md"
+                    android:text="@string/checkout_use_location" />
+
+                <Button
                     android:id="@+id/photoButton"
                     style="?attr/materialButtonOutlinedStyle"
                     android:layout_width="match_parent"

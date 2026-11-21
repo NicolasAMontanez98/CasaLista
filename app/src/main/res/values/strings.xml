@@ -53,6 +53,12 @@
     <string name="checkout_step">Paso %1$d de 3</string>
     <string name="checkout_lot_title">Datos del lote</string>
     <string name="checkout_lot_address">Dirección o ubicación del lote</string>
+    <string name="checkout_use_location">Usar mi ubicación actual</string>
+    <string name="checkout_locating">Buscando ubicación…</string>
+    <string name="checkout_location_denied">Sin permiso de ubicación. Escribe la dirección a mano.</string>
+    <string name="checkout_location_failed">No se pudo obtener la ubicación. Revisa que el GPS esté activo.</string>
+    <string name="order_open_map">Ver ubicación en el mapa</string>
+    <string name="order_no_map_app">No hay una aplicación de mapas instalada</string>
     <string name="checkout_photo">Tomar foto del lote (opcional)</string>
     <string name="checkout_photo_desc">Foto del lote</string>
     <string name="checkout_method_title">Método de pago</string>

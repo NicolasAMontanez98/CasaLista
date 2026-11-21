@@ -1,5 +1,7 @@
 package com.example.casalista.data
 
+import java.util.Calendar
+
 enum class Role(val label: String) {
     BUYER("Comprador"),
     SELLER("Vendedor"),
@@ -66,59 +68,50 @@ enum class OrderStatus(val label: String) {
 }
 
 data class SaleOrder(
-    val id: Int,
+    val id: String,
     val code: String,
+    val buyerUid: String,
     val buyer: String,
+    val houseId: String,
     val houseName: String,
     val quantity: Int,
     val total: Long,
     val address: String,
     val status: OrderStatus,
+    val createdAt: Long,
 )
 
 object Datos {
     val houses = mutableListOf<House>()
 
-    val monthlySales = listOf(
-        "Jun" to 210_000_000L,
-        "Jul" to 340_000_000L,
-        "Ago" to 280_000_000L,
-        "Sep" to 450_000_000L,
-        "Oct" to 390_000_000L,
-        "Nov" to 520_000_000L,
-    )
+    private val monthNames = listOf("Ene", "Feb", "Mar", "Abr", "May", "Jun", "Jul", "Ago", "Sep", "Oct", "Nov", "Dic")
 
-    val orders = mutableListOf(
-        SaleOrder(1, "CL-10231", "Ana Compradora", "Casa Aurora", 1, 68_000_000, "Lote 12, vereda La Mesa", OrderStatus.PENDING),
-        SaleOrder(2, "CL-10232", "Carlos Rojas", "Casa Brisa", 1, 89_000_000, "Calle 8 #4-20, Chía", OrderStatus.PENDING),
-        SaleOrder(3, "CL-10233", "Laura Gómez", "Casa Cumbre", 1, 120_000_000, "Finca El Roble, Villeta", OrderStatus.IN_PROGRESS),
-        SaleOrder(4, "CL-10234", "Mateo Pardo", "Casa Fénix", 2, 104_000_000, "Lote 3, Tabio", OrderStatus.IN_PROGRESS),
-        SaleOrder(5, "CL-10235", "Sofía Díaz", "Casa Eucalipto", 1, 178_000_000, "Km 5 vía Subachoque", OrderStatus.SHIPPED),
-        SaleOrder(6, "CL-10236", "Julián Mora", "Casa Guadua", 1, 95_000_000, "Vereda San José, Silvania", OrderStatus.DELIVERED),
-        SaleOrder(7, "CL-10237", "Valentina Ruiz", "Casa Isla", 1, 74_000_000, "Lote 7, Sopó", OrderStatus.DELIVERED),
-        SaleOrder(8, "CL-10238", "Andrés Vega", "Casa Dalia", 1, 142_000_000, "Calle 15 #9-33, Zipaquirá", OrderStatus.CANCELLED),
-    )
+    val orders = mutableListOf<SaleOrder>()
+
+    fun monthlySales(months: Int, now: Long = System.currentTimeMillis()): List<Pair<String, Long>> {
+        val cal = Calendar.getInstance().apply { timeInMillis = now; set(Calendar.DAY_OF_MONTH, 1) }
+        cal.add(Calendar.MONTH, -(months - 1))
+        return List(months) {
+            val month = cal.get(Calendar.MONTH)
+            val year = cal.get(Calendar.YEAR)
+            val total = orders.filter { order ->
+                val date = Calendar.getInstance().apply { timeInMillis = order.createdAt }
+                order.status != OrderStatus.CANCELLED &&
+                    date.get(Calendar.MONTH) == month && date.get(Calendar.YEAR) == year
+            }.sumOf { it.total }
+            cal.add(Calendar.MONTH, 1)
+            monthNames[month] to total
+        }
+    }
 
     fun updateOrder(order: SaleOrder) {
         val index = orders.indexOfFirst { it.id == order.id }
         if (index >= 0) orders[index] = order
     }
 
-    fun placeOrders(code: String, buyer: String, address: String) {
-        Cart.items.forEach { item ->
-            val id = (orders.maxOfOrNull { it.id } ?: 0) + 1
-            orders.add(
-                SaleOrder(
-                    id, code, buyer, item.house.name, item.quantity,
-                    item.house.price * item.quantity, address, OrderStatus.PENDING,
-                ),
-            )
-        }
-    }
-
     fun salesBySystem(): List<Pair<String, Long>> = orders
         .filter { it.status != OrderStatus.CANCELLED }
-        .groupBy { order -> houses.find { it.name == order.houseName }?.system ?: "Otro" }
+        .groupBy { order -> houses.find { it.id == order.houseId }?.system ?: "Otro" }
         .map { (system, list) -> system to list.sumOf { it.total } }
         .sortedByDescending { it.second }
 

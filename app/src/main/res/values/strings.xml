@@ -85,6 +85,9 @@
     <string name="nav_catalog">Catálogo</string>
     <string name="nav_cart">Carrito</string>
     <string name="nav_profile">Perfil</string>
+    <string name="nav_orders">Pedidos</string>
+    <string name="my_orders_title">Mis pedidos</string>
+    <string name="my_orders_empty">Aún no has hecho pedidos</string>
     <string name="seller_products">Mis productos</string>
     <string name="seller_orders">Pedidos recibidos</string>
     <string name="seller_profile">Perfil de vendedor</string>

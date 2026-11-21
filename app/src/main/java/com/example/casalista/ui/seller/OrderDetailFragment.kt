@@ -4,28 +4,49 @@ import android.os.Bundle
 import android.view.View
 import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
+import androidx.lifecycle.lifecycleScope
 import com.example.casalista.R
+import com.example.casalista.data.AuthRepository
 import com.example.casalista.data.Datos
+import com.example.casalista.data.OrderRepository
 import com.example.casalista.data.OrderStatus
 import com.example.casalista.databinding.FragmentOrderDetailBinding
 import com.example.casalista.util.toPesos
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
+import com.google.android.material.snackbar.Snackbar
+import kotlinx.coroutines.CancellationException
+import kotlinx.coroutines.launch
 
 class OrderDetailFragment : Fragment(R.layout.fragment_order_detail) {
 
     private lateinit var binding: FragmentOrderDetailBinding
-    private var orderId = 0
+    private lateinit var orderId: String
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         binding = FragmentOrderDetailBinding.bind(view)
-        orderId = requireArguments().getInt("orderId")
+        orderId = requireArguments().getString("orderId").orEmpty()
         binding.advanceButton.setOnClickListener {
-            val order = Datos.orders.first { it.id == orderId }
-            order.status.next?.let { Datos.updateOrder(order.copy(status = it)) }
-            render()
+            Datos.orders.first { it.id == orderId }.status.next?.let(::changeStatus)
         }
         binding.cancelButton.setOnClickListener { confirmCancel() }
         render()
+    }
+
+    private fun changeStatus(status: OrderStatus) {
+        binding.advanceButton.isEnabled = false
+        binding.cancelButton.isEnabled = false
+        viewLifecycleOwner.lifecycleScope.launch {
+            try {
+                OrderRepository.updateStatus(Datos.orders.first { it.id == orderId }, status)
+            } catch (e: CancellationException) {
+                throw e
+            } catch (e: Exception) {
+                Snackbar.make(binding.root, AuthRepository.errorMessage(e), Snackbar.LENGTH_SHORT).show()
+            }
+            binding.advanceButton.isEnabled = true
+            binding.cancelButton.isEnabled = true
+            render()
+        }
     }
 
     private fun confirmCancel() {
@@ -33,11 +54,7 @@ class OrderDetailFragment : Fragment(R.layout.fragment_order_detail) {
             .setTitle(R.string.order_cancel_title)
             .setMessage(R.string.order_cancel_message)
             .setNegativeButton(R.string.detail_back, null)
-            .setPositiveButton(R.string.order_cancel_confirm) { _, _ ->
-                val order = Datos.orders.first { it.id == orderId }
-                Datos.updateOrder(order.copy(status = OrderStatus.CANCELLED))
-                render()
-            }
+            .setPositiveButton(R.string.order_cancel_confirm) { _, _ -> changeStatus(OrderStatus.CANCELLED) }
             .show()
     }
 

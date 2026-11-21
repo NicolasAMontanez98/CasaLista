@@ -24,6 +24,10 @@
         android:name="com.example.casalista.ui.buyer.CartFragment" />
 
     <fragment
+        android:id="@+id/myOrdersFragment"
+        android:name="com.example.casalista.ui.buyer.MyOrdersFragment" />
+
+    <fragment
         android:id="@+id/buyerProfileFragment"
         android:name="com.example.casalista.ui.common.ProfileFragment" />
 </navigation>

@@ -8,6 +8,7 @@ import androidx.navigation.ui.setupWithNavController
 import com.example.casalista.R
 import com.example.casalista.databinding.ActivitySellerBinding
 
+/** Contenedor de las pantallas del vendedor: barra superior y menú lateral con productos, pedidos y perfil. */
 class SellerActivity : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {

@@ -3,11 +3,14 @@ package com.example.casalista.util
 import android.content.Context
 import androidx.appcompat.app.AppCompatDelegate
 
+/** Guarda y aplica la elección de tema claro u oscuro. Si nunca se eligió, se sigue al sistema. */
 object ThemeManager {
     private const val KEY = "dark"
 
+    /** Preferencias donde se guarda la elección de tema. */
     private fun prefs(context: Context) = context.getSharedPreferences("theme", Context.MODE_PRIVATE)
 
+    /** Aplica el tema guardado; no hace nada si el usuario no ha elegido uno. */
     fun apply(context: Context) {
         val prefs = prefs(context)
         if (!prefs.contains(KEY)) return
@@ -17,6 +20,7 @@ object ThemeManager {
         )
     }
 
+    /** Guarda la elección y cambia el tema en el momento. */
     fun setDark(context: Context, dark: Boolean) {
         prefs(context).edit().putBoolean(KEY, dark).apply()
         apply(context)

@@ -16,6 +16,10 @@ import com.example.casalista.util.toPesos
 import kotlinx.coroutines.CancellationException
 import kotlinx.coroutines.launch
 
+/**
+ * Panel del administrador: ventas totales, pedidos, usuarios, productos y la gráfica de ventas.
+ * Si no hay casas en Firestore, carga las de ejemplo la primera vez.
+ */
 class DashboardFragment : Fragment(R.layout.fragment_dashboard) {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {

@@ -22,6 +22,10 @@ import com.google.android.material.chip.ChipGroup
 import kotlinx.coroutines.CancellationException
 import kotlinx.coroutines.launch
 
+/**
+ * Panel de productos del vendedor: lista todas las casas (también las ocultas), con búsqueda por nombre y filtro por estado.
+ * Desde aquí se abre el formulario para crear o editar un producto.
+ */
 class ProductPanelFragment : Fragment(R.layout.fragment_product_panel) {
 
     private var status: String? = null
@@ -32,6 +36,7 @@ class ProductPanelFragment : Fragment(R.layout.fragment_product_panel) {
         binding.productList.adapter = adapter
         binding.addButton.setOnClickListener { openForm("") }
 
+        /** Aplica la búsqueda y el estado elegido y muestra el aviso si no hay resultados. */
         fun refresh() {
             val found = Datos.search(
                 binding.searchInput.text.toString(), null, Order.NAME, status, includePaused = true,
@@ -59,6 +64,7 @@ class ProductPanelFragment : Fragment(R.layout.fragment_product_panel) {
         }
     }
 
+    /** Abre el formulario; con un id vacío crea un producto nuevo. */
     private fun openForm(houseId: String) =
         goTo(R.id.productFormFragment, bundleOf("houseId" to houseId))
 }

@@ -13,6 +13,10 @@ import com.example.casalista.databinding.ActivityBuyerBinding
 import com.google.firebase.auth.FirebaseAuth
 import kotlinx.coroutines.launch
 
+/**
+ * Contenedor de las pantallas del comprador, con la barra de navegación inferior
+ * (inicio, catálogo, carrito, pedidos y perfil). También sincroniza el carrito con Firestore.
+ */
 class BuyerActivity : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -27,6 +31,10 @@ class BuyerActivity : AppCompatActivity() {
         syncCart()
     }
 
+    /**
+     * Vacía el carrito en memoria, carga el que el usuario guardó en Firestore y, desde
+     * ese momento, guarda cada cambio que haga en el carrito.
+     */
     private fun syncCart() {
         Cart.onChange = null
         Cart.restore(emptyMap())
@@ -40,6 +48,7 @@ class BuyerActivity : AppCompatActivity() {
         }
     }
 
+    /** Deja de guardar el carrito al cerrar la pantalla. */
     override fun onDestroy() {
         Cart.onChange = null
         super.onDestroy()

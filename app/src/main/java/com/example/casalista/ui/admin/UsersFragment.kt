@@ -23,6 +23,7 @@ import com.google.android.material.chip.ChipGroup
 import kotlinx.coroutines.CancellationException
 import kotlinx.coroutines.launch
 
+/** Lista de usuarios con búsqueda por nombre o correo y filtro por rol. Desde aquí se crea o edita un usuario. */
 class UsersFragment : Fragment(R.layout.fragment_users) {
 
     private var role: Role? = null
@@ -34,6 +35,7 @@ class UsersFragment : Fragment(R.layout.fragment_users) {
         binding.userList.adapter = adapter
         binding.addButton.setOnClickListener { openForm("") }
 
+        /** Aplica la búsqueda y el rol elegido sobre la lista completa y muestra el aviso si no hay resultados. */
         fun refresh() {
             val found = filterUsers(allUsers, binding.searchInput.text.toString(), role)
             adapter.submitList(found)
@@ -60,6 +62,7 @@ class UsersFragment : Fragment(R.layout.fragment_users) {
         }
     }
 
+    /** Abre el formulario de usuario; con un uid vacío crea uno nuevo. */
     private fun openForm(uid: String) =
         goTo(R.id.userFormFragment, bundleOf("uid" to uid))
 }

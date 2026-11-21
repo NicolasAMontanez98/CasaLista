@@ -7,6 +7,10 @@ import com.example.casalista.data.CartItem
 import com.example.casalista.databinding.ItemCartBinding
 import com.example.casalista.util.toPesos
 
+/**
+ * Adaptador del carrito: cada fila muestra la casa, su precio, la cantidad y los botones para
+ * restar, sumar y quitar.
+ */
 class CartAdapter(
     private val onMinus: (CartItem) -> Unit,
     private val onPlus: (CartItem) -> Unit,
@@ -15,6 +19,7 @@ class CartAdapter(
 
     private var items = listOf<CartItem>()
 
+    /** Reemplaza la lista y vuelve a dibujarla. */
     fun submitList(list: List<CartItem>) {
         items = list
         notifyDataSetChanged()
@@ -22,11 +27,13 @@ class CartAdapter(
 
     override fun getItemCount() = items.size
 
+    /** Guarda las vistas de una fila para reutilizarlas. */
     class Holder(val binding: ItemCartBinding) : RecyclerView.ViewHolder(binding.root)
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int) =
         Holder(ItemCartBinding.inflate(LayoutInflater.from(parent.context), parent, false))
 
+    /** Llena una fila con los datos de la línea del carrito y conecta sus botones. */
     override fun onBindViewHolder(holder: Holder, position: Int) {
         val item = items[position]
         with(holder.binding) {

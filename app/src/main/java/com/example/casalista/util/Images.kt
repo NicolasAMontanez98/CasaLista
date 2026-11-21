@@ -6,6 +6,10 @@ import android.graphics.ImageDecoder
 import android.net.Uri
 import java.io.ByteArrayOutputStream
 
+/**
+ * Lee la imagen de [uri], la reduce para que su lado más largo no pase de [maxSide]
+ * píxeles y la devuelve en JPEG al 80 % de calidad. Así las fotos pesan poco al subirlas.
+ */
 fun compressImage(context: Context, uri: Uri, maxSide: Int = 1280): ByteArray {
     val source = ImageDecoder.createSource(context.contentResolver, uri)
     val bitmap = ImageDecoder.decodeBitmap(source) { decoder, info, _ ->

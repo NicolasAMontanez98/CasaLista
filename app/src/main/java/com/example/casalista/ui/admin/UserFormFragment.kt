@@ -22,6 +22,10 @@ import com.google.firebase.auth.FirebaseAuthUserCollisionException
 import kotlinx.coroutines.CancellationException
 import kotlinx.coroutines.launch
 
+/**
+ * Formulario para crear o editar un usuario. Al editar se puede cambiar nombre y rol, suspender o
+ * activar la cuenta y eliminar el perfil; el correo y la contraseña solo se piden al crear.
+ */
 class UserFormFragment : Fragment(R.layout.fragment_user_form) {
 
     private lateinit var binding: FragmentUserFormBinding
@@ -41,6 +45,7 @@ class UserFormFragment : Fragment(R.layout.fragment_user_form) {
         if (uid.isNotEmpty()) loadUser(uid)
     }
 
+    /** Carga el usuario a editar y rellena el formulario; si no existe, vuelve a la pantalla anterior. */
     private fun loadUser(uid: String) {
         binding.saveButton.isEnabled = false
         viewLifecycleOwner.lifecycleScope.launch {
@@ -63,6 +68,10 @@ class UserFormFragment : Fragment(R.layout.fragment_user_form) {
         }
     }
 
+    /**
+     * Muestra los botones de suspender y eliminar. El administrador no puede cambiar el rol ni
+     * suspenderse a sí mismo.
+     */
     private fun setupAccountActions(user: User) {
         if (user.uid == SessionManager.current?.uid) {
             binding.roleLayout.isEnabled = false
@@ -90,6 +99,7 @@ class UserFormFragment : Fragment(R.layout.fragment_user_form) {
         }
     }
 
+    /** Valida el formulario y crea el usuario (si es nuevo) o guarda los cambios (si ya existía). */
     private fun save() {
         val name = binding.nameInput.text.toString().trim()
         val email = binding.emailInput.text.toString().trim()
@@ -116,6 +126,7 @@ class UserFormFragment : Fragment(R.layout.fragment_user_form) {
         }
     }
 
+    /** Ejecuta una acción en segundo plano y, si sale bien, vuelve a la pantalla anterior. */
     private fun finishWith(action: suspend () -> Unit) {
         setButtonsEnabled(false)
         viewLifecycleOwner.lifecycleScope.launch {
@@ -131,12 +142,14 @@ class UserFormFragment : Fragment(R.layout.fragment_user_form) {
         }
     }
 
+    /** Activa o desactiva los botones mientras hay una operación en curso. */
     private fun setButtonsEnabled(enabled: Boolean) {
         binding.saveButton.isEnabled = enabled
         binding.suspendButton.isEnabled = enabled
         binding.deleteButton.isEnabled = enabled
     }
 
+    /** Si el correo ya existe, marca el campo; con cualquier otro error muestra un aviso. */
     private fun showError(e: Exception) {
         val message = getString(AuthRepository.errorMessage(e))
         if (e is FirebaseAuthUserCollisionException) {

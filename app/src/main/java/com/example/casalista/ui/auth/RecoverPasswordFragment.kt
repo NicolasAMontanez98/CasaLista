@@ -13,6 +13,7 @@ import com.example.casalista.util.Validators
 import kotlinx.coroutines.CancellationException
 import kotlinx.coroutines.launch
 
+/** Pantalla para recuperar la contraseña: pide el correo y envía el enlace de restablecimiento. */
 class RecoverPasswordFragment : Fragment(R.layout.fragment_recover_password) {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -26,6 +27,7 @@ class RecoverPasswordFragment : Fragment(R.layout.fragment_recover_password) {
         binding.backButton.setOnClickListener { findNavController().popBackStack() }
     }
 
+    /** Envía el correo y cambia el formulario por el mensaje de confirmación. */
     private fun send(binding: FragmentRecoverPasswordBinding, email: String) {
         binding.sendButton.isEnabled = false
         viewLifecycleOwner.lifecycleScope.launch {

@@ -11,12 +11,14 @@ import com.example.casalista.databinding.FragmentCartBinding
 import com.example.casalista.ui.common.CartAdapter
 import com.example.casalista.util.toPesos
 
+/** Carrito del comprador: lista de casas con cantidades, total y botón para ir a pagar. */
 class CartFragment : Fragment(R.layout.fragment_cart) {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         val binding = FragmentCartBinding.bind(view)
         lateinit var adapter: CartAdapter
 
+        /** Vuelve a pintar la lista y el total, o el mensaje de carrito vacío. */
         fun refresh() {
             val items = Cart.items
             adapter.submitList(items)

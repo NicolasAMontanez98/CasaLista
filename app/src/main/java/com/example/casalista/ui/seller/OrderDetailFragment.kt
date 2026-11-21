@@ -20,6 +20,10 @@ import com.google.android.material.snackbar.Snackbar
 import kotlinx.coroutines.CancellationException
 import kotlinx.coroutines.launch
 
+/**
+ * Detalle de un pedido para el vendedor: datos de la compra, botón para avanzar su estado,
+ * cancelarlo y ver la dirección de entrega en el mapa.
+ */
 class OrderDetailFragment : Fragment(R.layout.fragment_order_detail) {
 
     private lateinit var binding: FragmentOrderDetailBinding
@@ -36,6 +40,7 @@ class OrderDetailFragment : Fragment(R.layout.fragment_order_detail) {
         render()
     }
 
+    /** Guarda el nuevo estado del pedido y vuelve a dibujar la pantalla. */
     private fun changeStatus(status: OrderStatus) {
         binding.advanceButton.isEnabled = false
         binding.cancelButton.isEnabled = false
@@ -53,6 +58,7 @@ class OrderDetailFragment : Fragment(R.layout.fragment_order_detail) {
         }
     }
 
+    /** Abre la app de mapas en las coordenadas de entrega; avisa si el teléfono no tiene ninguna. */
     private fun openMap() {
         val order = Datos.orders.first { it.id == orderId }
         val label = Uri.encode(order.address)
@@ -64,6 +70,7 @@ class OrderDetailFragment : Fragment(R.layout.fragment_order_detail) {
         }
     }
 
+    /** Pide confirmación antes de cancelar el pedido, porque no se puede deshacer. */
     private fun confirmCancel() {
         MaterialAlertDialogBuilder(requireContext())
             .setTitle(R.string.order_cancel_title)
@@ -73,6 +80,7 @@ class OrderDetailFragment : Fragment(R.layout.fragment_order_detail) {
             .show()
     }
 
+    /** Muestra los datos del pedido y deja visibles solo los botones que aplican a su estado. */
     private fun render() {
         val order = Datos.orders.first { it.id == orderId }
         binding.orderCode.text = order.code

@@ -18,6 +18,10 @@ import com.google.android.material.chip.Chip
 import kotlinx.coroutines.CancellationException
 import kotlinx.coroutines.launch
 
+/**
+ * Pantalla de inicio del comprador: buscador, atajos por sistema constructivo y las
+ * tres primeras casas publicadas como destacadas.
+ */
 class HomeFragment : Fragment(R.layout.fragment_home) {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -50,6 +54,7 @@ class HomeFragment : Fragment(R.layout.fragment_home) {
         }
     }
 
+    /** Abre el catálogo con un filtro inicial (texto buscado o sistema elegido). */
     private fun openCatalog(filter: Pair<String, String>) =
         goTo(R.id.catalogFragment, bundleOf(filter))
 }

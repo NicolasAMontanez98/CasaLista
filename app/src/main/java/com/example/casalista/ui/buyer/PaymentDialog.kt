@@ -24,6 +24,10 @@ import kotlinx.coroutines.CancellationException
 import kotlinx.coroutines.launch
 import java.io.ByteArrayInputStream
 
+/**
+ * Muestra a pantalla completa el checkout de ePayco dentro de un WebView. Cuando ePayco redirige con la referencia del
+ * pago, la consulta a la API de validación y entrega el resultado en [onResult] (null si el usuario cancela).
+ */
 @SuppressLint("SetJavaScriptEnabled")
 fun Fragment.showPayment(invoice: String, amount: Long, onResult: (PaymentResult?) -> Unit) {
     val context = requireContext()
@@ -31,6 +35,7 @@ fun Fragment.showPayment(invoice: String, amount: Long, onResult: (PaymentResult
     val frame = FrameLayout(context)
     var handled = false
 
+    /** Revisa todas las peticiones del WebView; al ver la referencia del pago, la valida y cierra el cuadro. */
     val client = object : WebViewClient() {
         override fun shouldInterceptRequest(view: WebView, request: WebResourceRequest): WebResourceResponse? {
             val url = request.url.toString()
@@ -54,6 +59,7 @@ fun Fragment.showPayment(invoice: String, amount: Long, onResult: (PaymentResult
         }
     }
 
+    /** Fábrica de WebView con la configuración necesaria para el checkout. */
     lateinit var newWebView: () -> WebView
 
     // ePayco opens the 3D Secure step with window.open and talks to that popup, so it needs its own WebView

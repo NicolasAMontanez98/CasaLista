@@ -8,11 +8,13 @@ import com.example.casalista.data.House
 import com.example.casalista.databinding.ItemReviewBinding
 import com.example.casalista.util.toPesos
 
+/** Adaptador de la cola de revisión: cada fila muestra una casa con los botones aprobar y rechazar. */
 class ReviewAdapter(private val onReview: (House, Boolean) -> Unit) :
     RecyclerView.Adapter<ReviewAdapter.Holder>() {
 
     private var items = listOf<House>()
 
+    /** Reemplaza la lista y vuelve a dibujarla. */
     fun submitList(list: List<House>) {
         items = list
         notifyDataSetChanged()
@@ -20,11 +22,13 @@ class ReviewAdapter(private val onReview: (House, Boolean) -> Unit) :
 
     override fun getItemCount() = items.size
 
+    /** Guarda las vistas de una fila para reutilizarlas. */
     class Holder(val binding: ItemReviewBinding) : RecyclerView.ViewHolder(binding.root)
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int) =
         Holder(ItemReviewBinding.inflate(LayoutInflater.from(parent.context), parent, false))
 
+    /** Llena una fila con los datos de la casa y conecta sus botones. */
     override fun onBindViewHolder(holder: Holder, position: Int) {
         val house = items[position]
         with(holder.binding) {

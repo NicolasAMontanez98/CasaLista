@@ -20,6 +20,10 @@ import com.google.android.material.snackbar.Snackbar
 import kotlinx.coroutines.CancellationException
 import kotlinx.coroutines.launch
 
+/**
+ * Reporte de ventas: gráfica por mes (últimos 3 o 6 meses), gráfica por sistema constructivo y
+ * botón para compartir los datos en formato CSV.
+ */
 class SalesReportFragment : Fragment(R.layout.fragment_sales_report) {
 
     private var months = 6
@@ -27,6 +31,7 @@ class SalesReportFragment : Fragment(R.layout.fragment_sales_report) {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         val binding = FragmentSalesReportBinding.bind(view)
         var bySystem = listOf<Pair<String, Long>>()
+        /** Redibuja la gráfica mensual y el total del periodo elegido. */
         fun refresh() {
             val sales = Datos.monthlySales(months)
             binding.monthlyChart.bars = sales

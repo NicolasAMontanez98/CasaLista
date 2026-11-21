@@ -16,6 +16,7 @@ import com.google.android.material.snackbar.Snackbar
 import kotlinx.coroutines.CancellationException
 import kotlinx.coroutines.launch
 
+/** Lista de pedidos recibidos por el vendedor. Al tocar uno se abre su detalle. */
 class OrdersHistoryFragment : Fragment(R.layout.fragment_orders_history) {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {

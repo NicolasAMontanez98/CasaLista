@@ -1,10 +1,12 @@
 package com.example.casalista.ui.buyer
 
+import android.Manifest
 import android.os.Bundle
 import android.view.View
 import android.widget.RadioButton
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.core.view.isVisible
+import androidx.core.widget.doAfterTextChanged
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
@@ -15,7 +17,9 @@ import com.example.casalista.data.OrderRepository
 import com.example.casalista.databinding.FragmentCheckoutBinding
 import com.example.casalista.util.SessionManager
 import com.example.casalista.util.Validators
+import com.example.casalista.util.addressOf
 import com.example.casalista.util.biometricAvailable
+import com.example.casalista.util.currentLocation
 import com.example.casalista.util.showBiometricPrompt
 import com.example.casalista.util.toPesos
 import com.google.android.material.snackbar.Snackbar
@@ -28,6 +32,14 @@ class CheckoutFragment : Fragment(R.layout.fragment_checkout) {
     private lateinit var binding: FragmentCheckoutBinding
     private var step = 0
 
+    private var lat: Double? = null
+    private var lng: Double? = null
+    private var typingByUser = true
+
+    private val askLocation = registerForActivityResult(ActivityResultContracts.RequestMultiplePermissions()) { granted ->
+        if (granted.values.any { it }) useMyLocation() else showMessage(R.string.checkout_location_denied)
+    }
+
     private val takePhoto = registerForActivityResult(ActivityResultContracts.TakePicturePreview()) {
         it?.let { photo ->
             binding.lotPhoto.setImageBitmap(photo)
@@ -38,6 +50,17 @@ class CheckoutFragment : Fragment(R.layout.fragment_checkout) {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         binding = FragmentCheckoutBinding.bind(view)
         binding.toolbar.setNavigationOnClickListener { findNavController().popBackStack() }
+        binding.locationButton.setOnClickListener {
+            askLocation.launch(
+                arrayOf(Manifest.permission.ACCESS_FINE_LOCATION, Manifest.permission.ACCESS_COARSE_LOCATION),
+            )
+        }
+        binding.addressInput.doAfterTextChanged {
+            if (typingByUser) {
+                lat = null
+                lng = null
+            }
+        }
         binding.photoButton.setOnClickListener { takePhoto.launch(null) }
         binding.backButton.setOnClickListener { showStep(step - 1) }
         binding.homeButton.setOnClickListener {
@@ -60,6 +83,35 @@ class CheckoutFragment : Fragment(R.layout.fragment_checkout) {
             }
         }
         showStep(0)
+    }
+
+    private fun showMessage(message: Int) = Snackbar.make(binding.root, message, Snackbar.LENGTH_SHORT).show()
+
+    private fun useMyLocation() {
+        binding.locationButton.isEnabled = false
+        binding.locationButton.setText(R.string.checkout_locating)
+        viewLifecycleOwner.lifecycleScope.launch {
+            try {
+                val location = currentLocation(requireContext())
+                if (location == null) {
+                    showMessage(R.string.checkout_location_failed)
+                } else {
+                    val text = addressOf(requireContext(), location)
+                        ?: "%.5f, %.5f".format(location.latitude, location.longitude)
+                    typingByUser = false
+                    binding.addressInput.setText(text)
+                    typingByUser = true
+                    lat = location.latitude
+                    lng = location.longitude
+                }
+            } catch (e: CancellationException) {
+                throw e
+            } catch (e: Exception) {
+                showMessage(R.string.checkout_location_failed)
+            }
+            binding.locationButton.isEnabled = true
+            binding.locationButton.setText(R.string.checkout_use_location)
+        }
     }
 
     private fun goToMethodIfAddressValid() {
@@ -99,7 +151,7 @@ class CheckoutFragment : Fragment(R.layout.fragment_checkout) {
             try {
                 OrderRepository.place(
                     code, uid, SessionManager.current?.name.orEmpty(),
-                    binding.addressInput.text.toString().trim(), Cart.items,
+                    binding.addressInput.text.toString().trim(), Cart.items, lat, lng,
                 )
                 binding.resultMessage.text = getString(R.string.checkout_done_message, code)
                 Cart.clear()

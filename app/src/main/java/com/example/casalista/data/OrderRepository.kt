@@ -16,14 +16,17 @@ object OrderRepository {
         Datos.orders.addAll(docs.map { it.toOrder() }.sortedByDescending { it.createdAt })
     }
 
-    suspend fun place(code: String, uid: String, buyer: String, address: String, items: List<CartItem>) {
+    suspend fun place(
+        code: String, uid: String, buyer: String, address: String,
+        items: List<CartItem>, lat: Double?, lng: Double?,
+    ) {
         val db = FirebaseFirestore.getInstance()
         val batch = db.batch()
         val now = System.currentTimeMillis()
         items.forEach { item ->
             val order = SaleOrder(
                 orders.document().id, code, uid, buyer, item.house.id, item.house.name, item.quantity,
-                item.house.price * item.quantity, address, OrderStatus.PENDING, now,
+                item.house.price * item.quantity, address, OrderStatus.PENDING, now, lat, lng,
             )
             batch.set(orders.document(order.id), order.toMap())
         }
@@ -36,6 +39,8 @@ object OrderRepository {
     }
 
     private fun SaleOrder.toMap() = mapOf(
+        "lat" to lat,
+        "lng" to lng,
         "code" to code,
         "buyerUid" to buyerUid,
         "buyer" to buyer,
@@ -60,5 +65,7 @@ object OrderRepository {
         address = getString("address").orEmpty(),
         status = OrderStatus.entries.find { it.name == getString("status") } ?: OrderStatus.PENDING,
         createdAt = getLong("createdAt") ?: 0,
+        lat = getDouble("lat"),
+        lng = getDouble("lng"),
     )
 }

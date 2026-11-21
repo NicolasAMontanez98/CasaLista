@@ -79,6 +79,8 @@ data class SaleOrder(
     val address: String,
     val status: OrderStatus,
     val createdAt: Long,
+    val lat: Double? = null,
+    val lng: Double? = null,
 )
 
 object Datos {

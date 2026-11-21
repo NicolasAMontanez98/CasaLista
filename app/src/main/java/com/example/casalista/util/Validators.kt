@@ -1,7 +1,6 @@
 package com.example.casalista.util
 
 import com.example.casalista.R
-import com.example.casalista.data.Datos
 
 object Validators {
     private val emailFormat = Regex("^[^@\\s]+@[^@\\s]+\\.[^@\\s]+$")
@@ -23,9 +22,6 @@ object Validators {
         !emailFormat.matches(email) -> R.string.error_email_invalid
         else -> null
     }
-
-    fun newEmailError(email: String): Int? = emailError(email)
-        ?: if (Datos.findByEmail(email) != null) R.string.error_email_taken else null
 
     fun passwordError(password: String): Int? = when {
         password.isEmpty() -> R.string.error_password_required

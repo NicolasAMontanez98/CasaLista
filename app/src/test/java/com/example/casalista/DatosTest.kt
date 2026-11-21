@@ -14,18 +14,6 @@ import org.junit.Test
 class DatosTest {
 
     @Test
-    fun loginReturnsUserWithItsRole() {
-        assertEquals(Role.SELLER, Datos.login("vendedor@casalista.co", "123456")?.role)
-        assertEquals(Role.ADMIN, Datos.login("ADMIN@casalista.co", "123456")?.role)
-    }
-
-    @Test
-    fun loginFailsWithWrongPasswordOrUnknownEmail() {
-        assertNull(Datos.login("vendedor@casalista.co", "otra"))
-        assertNull(Datos.login("nadie@casalista.co", "123456"))
-    }
-
-    @Test
     fun searchFiltersByNameAndSystem() {
         assertEquals(listOf("Casa Aurora"), Datos.search(" aurora ", null, Order.NAME).map { it.name })
         assertEquals(setOf("Madera"), Datos.search("", "Madera", Order.NAME).map { it.system }.toSet())
@@ -92,13 +80,6 @@ class DatosTest {
     fun totalSalesLeavesOutCancelledOrders() {
         val cancelled = Datos.orders.filter { it.status == OrderStatus.CANCELLED }.sumOf { it.total }
         assertEquals(Datos.orders.sumOf { it.total } - cancelled, Datos.totalSales)
-    }
-
-    @Test
-    fun searchUsersByTextAndRole() {
-        assertEquals(listOf("Adriana Admin"), Datos.searchUsers("adri", null).map { it.name })
-        assertEquals(listOf("Vicente Vendedor"), Datos.searchUsers("casalista", Role.SELLER).map { it.name })
-        assertEquals(3, Datos.searchUsers("", null).size)
     }
 
     @Test
